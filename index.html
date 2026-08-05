@@ -1057,12 +1057,10 @@
       
       // Unlock audio on first interaction (required by mobile browsers)
       // Explicitly unmute background element for Safari
-      audio.muted = false; 
       audio.volume = 0;
       audio.play().then(() => {
         audio.pause();
         audio.currentTime = 0;
-        audio.muted = false; // Unmute again after brief pause for iOS
       }).catch(e => console.log('Audio unlock failed', e));
 
       // Trigger fade 1.2s before video ends for a seamless transition
@@ -1074,6 +1072,7 @@
       video.onended = finishIntro;
 
       // Play video
+      video.muted = false;
       video.play().catch(e => console.log('Video play failed', e));
       
       // Fallback if video fails/ends early
