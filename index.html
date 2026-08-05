@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Baby's Birthday Invitation</title>
+  
+  <!-- Fonts: Fredoka One (for titles) & Quicksand (for text) -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+  
+  <!-- Preload Critical First Section & Intro Video Assets -->
+  <link rel="preload" href="images/EnvelopAudioHoney.mp4" as="video" type="video/mp4" fetchpriority="high">
+  <link rel="preload" href="images/HoneyThemeBanner.avif" as="image" fetchpriority="high">
+  <link rel="preload" href="images/GiftHoney_2.webp" as="image" fetchpriority="high">
+  <link rel="icon" href="data:,">
+  
+  <!-- Embla Carousel CSS -->
+  <style>
+    /* VARIABLES */
+    :root {
+      --text: #5c4331;
+      --text-light: #8c7361;
+      --bg: #fdfaf6;
+      --bg-accent: #fffaea;
+      --primary: #f2a629; /* Honey Yellow */
+      --secondary: #d1bfae; /* Bear Brown */
+      --accent: #ff8c42; /* Soft Orange */
+      --white: #ffffff;
+      --border: rgba(92, 67, 49, 0.1);
+      --max-w: 480px;
+    }
+
+
+    /* RESET & BASE */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #111;
+      font-family: 'Quicksand', sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden; /* Locked initially */
+    }
+    body.unlocked { overflow: auto; background: #e8ded3; } 
+
+    /* APP CONTAINER */
+    #app {
+      width: 100%; max-width: var(--max-w);
+      min-height: 100vh; margin: 0 auto;
+      background: var(--bg);
+      background-image: url('https://images.unsplash.com/photo-1579547621113-e4bb355fb692?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'); /* Watercolor placeholder */
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      position: relative;
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, .title-font { font-family: 'Fredoka One', cursive; font-weight: normal; }
+    .script-font { font-family: 'Pacifico', cursive; font-weight: normal; }
+    
+    .section-title { font-size: 2.2rem; color: var(--text); margin-bottom: 12px; text-align: center; line-height: 1.2; text-shadow: 2px 2px 0px rgba(255,255,255,0.7); }
+    .section-subtitle { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; text-align: center; }
+
+    /* MAIN CONTENT WRAPPER */
+    #main-content {
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+      display: none;
+    }
+
+    /* ══ 1. OPENING SEQUENCE ══ */
+    #curtain-layer {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100vh;
+      z-index: 1000;
+      background: #000;
+      display: flex; align-items: flex-end; justify-content: center;
+      transition: opacity 1.2s ease-in-out;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    #curtain-video {
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; height: 100%; min-width: 448px;
+      object-fit: cover;
+      pointer-events: none;
+    }
+    .tap-overlay {
+      position: relative; z-index: 1010;
+      text-align: center;
+      animation: tapPulse 2s infinite;
+      padding: 40px;
+      pointer-events: none;
+    }
+    .tap-text {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      color: #fff; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.4);
+      padding: 10px 20px; border-radius: 30px;
+    }
+    @keyframes tapPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+
+    /* ══ 2. HERO / WELCOME SECTION ══ */
+    .section { padding: 30px 16px 20px; position: relative; z-index: 2; }
+    .hero-sec { 
+      text-align: center; 
+      min-height: 100vh; 
+      display: flex; flex-direction: column; 
+      justify-content: center; align-items: center; 
+      background: url('images/HoneyThemeBanner.avif') center/cover no-repeat; /* Semi transparent for watercolor bg */
+    }
+    .textShadowLight{
+      text-shadow: #FFF 0px 0px 5px, #FFF 0px 0px 10px, #FFF 0px 0px 15px;
+    }
+    .textShadowDark{
+      text-shadow: 2px 2px 4px #5f3a1580, 0px 0px 10px #ae661eb8;  
+    }
+    
+    .hero-sec .script-font { font-size: 3.5rem; color: var(--accent); line-height: 1.1; margin: 20px 0; transform: rotate(-5deg); text-shadow: 1px 1px 4px #fdfaf6cc; }
+    .hero-sec h2 { font-size: 1.5rem; color: var(--text); }
+    .hero-sec .date { font-size: 1.2rem; font-weight: 700; color: var(--text-light); margin-top: 10px; }
+    .heroTop{
+      margin-bottom: auto;
+    }
+    /* COUNTDOWN */
+    .cd-grid { display: flex; justify-content: center; gap: 8px; margin-top: 8px; width: 100%; }
+    .cd-box { flex: 1; padding: 5px 5px; border-radius: 12px; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid var(--primary); }
+    .cd-num { font-family: 'Fredoka One', cursive; font-size: 16px; display: block; color: var(--accent); }
+    .cd-lbl { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; color: var(--text-light); text-transform: uppercase; }
+
+    /* Scroll Down Indicator */
+    .scroll-down-indicator {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin-top: 8px; cursor: pointer; opacity: 0; transform: translateY(10px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      pointer-events: none;
+    }
+    .scroll-down-indicator.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .scroll-down-indicator.hidden { opacity: 0 !important; pointer-events: none !important; }
+    .scroll-down-indicator svg {
+      width: 24px; height: 24px; stroke: var(--accent);
+      animation: miniScrollBounce 1.5s infinite ease-in-out;
+    }
+    @keyframes miniScrollBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+
+    /* ══ 3. CAROUSEL (Embla) ══ */
+    .carousel-sec { background: var(--bg-accent);}
+    .embla { overflow: hidden; width: 100%; padding: 40px 0; }
+    .embla__container { display: flex; touch-action: pan-y pinch-zoom; margin-left: -1rem; }
+    .embla__slide { transform: translate3d(0, 0, 0); flex: 0 0 80%; min-width: 0; padding-left: 1rem; }
+    /* =========================================
+   Polaroid Frame Adjustments
+========================================= */
+.polaroid { 
+  background: #fff; 
+  padding: 15px 15px 40px; 
+  border-radius: 8px; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+  position: relative; /* Crucial for absolute positioning of the bees */
+  transform: rotate(calc(-3deg + (var(--r) * 6deg)));
+}
+
+.polaroid img.main-photo { 
+  width: 100%; 
+  height: 300px; 
+  object-fit: cover; 
+  border-radius: 4px; 
+  background: #eee; 
+}
+
+.polaroid .caption { 
+  font-family: 'Pacifico', cursive; 
+  position: absolute; 
+  bottom: 10px; 
+  left: 0; 
+  width: 100%; 
+  text-align: center; 
+  font-size: 1.2rem; 
+  color: #333; 
+}
+
+/* =========================================
+   Static Frame Bee Overlays
+========================================= */
+.bee-overlay {
+  position: absolute;
+  width: 80px;
+  height: auto;
+  z-index: 10;
+  pointer-events: none; /* Prevents bees from interfering with clicks/swipes */
+}
+
+/* Bottom Left Bee (With Honey) */
+.bee-bottom-left {
+  bottom: -15px;
+  left: -25px;
+}
+
+/* Top Right Bee (Only Bee) */
+.bee-top-right {
+  width: 42px;
+  top: -25px;
+  right: -20px;
+}
+    /* ══ 4. PARTY SCHEDULE (Sticky Header & Cards) ══ */
+    /* =========================================
+   Schedule Section - Edge to Edge
+========================================= */
+.schedule-sec { 
+  padding: 30px 0; 
+  background: var(--bg); 
+  position: relative; 
+  width: 100%; /* Full width */
+  overflow: hidden;
+}
+
+.sticky-header {
+  position: sticky; 
+  top: 0; 
+  z-index: 10;
+  background: var(--bg);
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px dashed var(--primary);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+/* =========================================
+   Image & Overlay Wrapper 
+========================================= */
+.schedule-image-wrapper {
+  position: relative;
+  width: 100%;
+  /* This enables cqw (container query width) for perfectly scaling text */
+  container-type: inline-size; 
+  display: block;
+}
+
+/* Maintains exact aspect ratio edge-to-edge */
+.schedule-bg-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* =========================================
+   Wooden Plate Text Layout
+========================================= */
+.events-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.event-board {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centers the div precisely on the % point */
+  width: 65%; /* Constrains text within the wooden plates */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Fluid typography scaling perfectly with the image */
+.event-board .e-time { 
+  font-weight: 700; 
+  color: #5c4331; /* Dark wood-friendly color */
+  font-size: 3.5cqw; 
+  margin: 0 0 1cqw 0; /* Scalable margin */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.event-board .e-title { 
+  font-size: 5.5cqw; 
+  color: #3b2a1e; 
+  font-family: 'Fredoka One', cursive, sans-serif; 
+  margin: 0; 
+  line-height: 1.1;
+}
+
+    /* ══ 5. GIFT REGISTRY & EXTRAS ══ */
+    .registry-sec { text-align: center; background: rgba(253, 250, 246, 0.9); }
+    .registry-img { width: 100%; max-width: 250px; border-radius: 12px; margin-bottom: 20px; mix-blend-mode: multiply; }
+    .sign-board {
+      display: inline-block; background: #8c6239; color: #fff;
+      padding: 15px 30px; border-radius: 10px; font-family: 'Fredoka One', cursive;
+      text-decoration: none; font-size: 1.2rem; transform: rotate(-2deg);
+      box-shadow: 0 6px 0 #5c4331; transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .sign-board:active { transform: rotate(-2deg) translateY(4px); box-shadow: 0 2px 0 #5c4331; }
+
+    /* ══ 6. RSVP FORM ══ */
+    .rsvp-sec { 
+      background: var(--primary); 
+      padding-bottom: 60px; 
+      color: var(--text); 
+      position: relative; 
+      overflow: hidden; 
+    }
+    .rsvp-sec .section-subtitle,
+    .rsvp-sec .section-title,
+    .rsvp-sec .form-card {
+      position: relative;
+      z-index: 2;
+    }
+    .form-hc {
+      position: absolute;
+      top: 0;
+      width: 130px;
+      height: auto;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .form-hc-left {
+      left: 0;
+      transform: scaleX(-1);
+    }
+    .form-hc-right {
+      right: 0;
+    }
+    .form-card { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: left; }
+    
+    .form-label { display: block; font-weight: 700; color: var(--text); margin-bottom: 8px; font-size: 14px; }
+    .input-field { 
+      width: 100%; padding: 8px; border: 2px solid var(--border); border-radius: 12px;
+      background: var(--bg); font-family: 'Quicksand', sans-serif; font-size: 14px; color: var(--text); outline: none; margin-bottom: 12px; transition: border-color 0.3s; 
+    }
+    .input-field:focus { border-color: var(--accent); background: #fff; }
+    textarea.input-field { resize: none; min-height: 100px; }
+    
+    /* Custom Radios for Attendance */
+    .radio-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .radio-btn { cursor: pointer; display: flex; align-items: center; }
+    .radio-btn input { display: none; }
+    .radio-text { 
+      display: block; width: 100%; padding: 8px; border-radius: 12px; border: 2px solid var(--border);
+      font-weight: 600; text-align: center; transition: all 0.2s; background: var(--bg);
+    }
+    .radio-btn input:checked + .radio-text { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* Guest Toggle Group (Side by side) */
+    .toggle-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .toggle-btn { flex: 1; cursor: pointer; }
+    .toggle-btn input { display: none; }
+    .toggle-btn .toggle-text {
+      display: block; width: 100%; padding: 8px; border-radius: 12px; border: 2px solid var(--border);
+      font-weight: 600; text-align: center; transition: all 0.2s; background: var(--bg);
+    }
+    .toggle-btn input:checked + .toggle-text { background: var(--primary); color: var(--text); border-color: var(--primary); }
+
+    .submit-btn { 
+      width: 100%; padding: 18px; background: var(--accent); color: #fff; border: none; border-radius: 30px; 
+      font-family: 'Fredoka One', cursive; font-size: 1.2rem; cursor: pointer; transition: transform 0.2s; 
+      box-shadow: 0 6px 15px rgba(255, 140, 66, 0.4); 
+    }
+    .submit-btn:active { transform: scale(0.96); }
+
+    /* ══ 7. FOOTER ══ */
+    .footer { background: #333; color: #fff; padding: 40px 20px; text-align: center; }
+    .footer p { font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px; }
+    .footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
+    .footer .sign-off { margin-top: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+    /* ══ AUDIO CONTROLLER ══ */
+    .audio-ctrl { 
+      position: fixed; bottom: 25px; right: calc(50% - 240px + 25px); 
+      width: 56px; height: 56px; background: var(--accent); color: #fff; 
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+      cursor: pointer; z-index: 100; box-shadow: 0 6px 20px rgba(0,0,0,0.3); border: 3px solid #fff; 
+    }
+
+
+.bee-container {
+  position: absolute;
+  top: 60%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 50%;
+  pointer-events: none; /* Let users click elements behind the bees */
+  z-index: 10;
+}
+
+.bee {
+  position: absolute;
+  width: 30px; /* Sized perfectly for a subtle decorative element */
+  height: auto;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* =========================================
+   1. The Gentle Glide (Left to Right)
+   Max movement: 150px
+========================================= */
+.bee-glide {
+  top: 5%;
+  left: 60%;
+  animation: glideSmall 5s ease-in-out infinite;
+}
+@keyframes glideSmall {
+  0%    { transform: translate(0, 0) scaleX(1) rotate(0deg); }
+  25%   { transform: translate(75px, -15px) scaleX(1) rotate(-5deg); }
+  49.9% { transform: translate(150px, 0) scaleX(1) rotate(2deg); }
+  50%   { transform: translate(150px, 0) scaleX(-1) rotate(-2deg); } /* FLIP */
+  75%   { transform: translate(75px, -15px) scaleX(-1) rotate(-5deg); }
+  99.9% { transform: translate(0, 0) scaleX(-1) rotate(2deg); }
+  100%  { transform: translate(0, 0) scaleX(1) rotate(0deg); } /* FLIP BACK */
+}
+
+/* =========================================
+   2. The Pollen Search (Right to Left)
+   Max movement: -160px
+========================================= */
+.bee-search {
+  top: 15%;
+  left: 30%;
+  animation: searchSmall 6s ease-in-out infinite;
+}
+@keyframes searchSmall {
+  0%    { transform: translate(0, 0) scaleX(-1) rotate(0deg); } /* Starts flipped (facing left) */
+  25%   { transform: translate(-80px, 20px) scaleX(-1) rotate(5deg); } /* Dips down gently */
+  49.9% { transform: translate(-160px, 5px) scaleX(-1) rotate(-2deg); }
+  50%   { transform: translate(-160px, 5px) scaleX(1) rotate(2deg); } /* FLIP (facing right) */
+  75%   { transform: translate(-80px, 20px) scaleX(1) rotate(-5deg); }
+  99.9% { transform: translate(0, 0) scaleX(1) rotate(2deg); }
+  100%  { transform: translate(0, 0) scaleX(-1) rotate(0deg); } /* FLIP BACK */
+}
+
+/* =========================================
+   3. The Breezy Lift (Left to Right)
+   Max movement: 180px
+========================================= */
+.bee-lift {
+  top: 35%;
+  left: 25%;
+  animation: liftSmall 4.5s ease-in-out infinite;
+}
+@keyframes liftSmall {
+  0%    { transform: translate(0, 0) scaleX(1) rotate(0deg); }
+  25%   { transform: translate(90px, -40px) scaleX(1) rotate(-10deg); } /* Higher arc */
+  49.9% { transform: translate(180px, -10px) scaleX(1) rotate(3deg); }
+  50%   { transform: translate(180px, -10px) scaleX(-1) rotate(-3deg); } /* FLIP */
+  75%   { transform: translate(90px, -40px) scaleX(-1) rotate(-10deg); }
+  99.9% { transform: translate(0, 0) scaleX(-1) rotate(3deg); }
+  100%  { transform: translate(0, 0) scaleX(1) rotate(0deg); } /* FLIP BACK */
+}
+
+/* =========================================
+   4. The Petal Hop (Right to Left)
+   Max movement: -140px
+========================================= */
+.bee-hop {
+  top: 45%;
+  right: 30%; /* Positioned from the right to complement layout */
+  animation: hopSmall 5.5s ease-in-out infinite;
+}
+@keyframes hopSmall {
+  0%    { transform: translate(0, 0) scaleX(-1) rotate(0deg); } /* Starts facing left */
+  25%   { transform: translate(-70px, -25px) scaleX(-1) rotate(-8deg); }
+  49.9% { transform: translate(-140px, 0) scaleX(-1) rotate(4deg); }
+  50%   { transform: translate(-140px, 0) scaleX(1) rotate(-4deg); } /* FLIP (facing right) */
+  75%   { transform: translate(-70px, -25px) scaleX(1) rotate(8deg); }
+  99.9% { transform: translate(0, 0) scaleX(1) rotate(-4deg); }
+  100%  { transform: translate(0, 0) scaleX(-1) rotate(0deg); } /* FLIP BACK */
+}
+
+/* =========================================
+   5. The Evening Float (Left to Right)
+   Max movement: 120px
+========================================= */
+.bee-float {
+  top: 75%;
+  left: 10%;
+  animation: floatSmall 7s ease-in-out infinite;
+}
+@keyframes floatSmall {
+  0%    { transform: translate(0, 0) scaleX(1) rotate(0deg); }
+  25%   { transform: translate(60px, -5px) scaleX(1) rotate(-2deg); } /* Very slight bob */
+  49.9% { transform: translate(120px, 5px) scaleX(1) rotate(1deg); }
+  50%   { transform: translate(120px, 5px) scaleX(-1) rotate(-1deg); } /* FLIP */
+  75%   { transform: translate(60px, -5px) scaleX(-1) rotate(-2deg); }
+  99.9% { transform: translate(0, 0) scaleX(-1) rotate(1deg); }
+  100%  { transform: translate(0, 0) scaleX(1) rotate(0deg); } /* FLIP BACK */
+}
+
+    @media (max-width: 480px) { .audio-ctrl { right: 25px; } }
+
+    /* ══ GIFT REGISTRY MODAL ══ */
+    .modal-backdrop {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-backdrop.active {
+      opacity: 1; visibility: visible;
+    }
+    .modal-card {
+      background: var(--bg);
+      border-radius: 24px;
+      padding: 30px 20px 25px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      border: 3px solid var(--primary);
+      position: relative;
+      transform: translateY(20px) scale(0.95);
+      transition: transform 0.3s ease;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .modal-backdrop.active .modal-card {
+      transform: translateY(0) scale(1);
+    }
+    .modal-close {
+      position: absolute; top: 15px; right: 15px;
+      background: rgba(92, 67, 49, 0.1); border: none;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: bold; color: var(--text);
+      cursor: pointer; transition: background 0.2s;
+    }
+    .modal-close:hover { background: var(--accent); color: #fff; }
+    
+    .modal-title { font-family: 'Fredoka One', cursive; font-size: 1.8rem; color: var(--text); text-align: center; margin-bottom: 5px; }
+    .modal-subtitle { font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; text-align: center; margin-bottom: 8px; }
+    
+    .registry-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    
+    .opt-card-radio { cursor: pointer; display: block; }
+    .opt-card-radio input { display: none; }
+    
+    .opt-card {
+      background: var(--white); border-radius: 14px; padding: 8px 12px;
+      border: 2px solid var(--border); display: flex; align-items: center; gap: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-align: left; transition: all 0.2s ease;
+    }
+    .opt-card-radio input:checked + .opt-card {
+      border-color: var(--accent);
+      background: var(--bg-accent);
+      box-shadow: 0 4px 12px rgba(255, 140, 66, 0.25);
+    }
+    .opt-icon { font-size: 34px; flex-shrink: 0; }
+    .opt-info h4 { font-family: 'Fredoka One', cursive; font-size: 15px; color: var(--text); margin-bottom: 3px; }
+    .opt-info p { font-size: 10px; color: var(--text-light); line-height: 1.1; }
+
+    .modal-btn {
+      width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none;
+      border-radius: 30px; font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      cursor: pointer; box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3); text-align: center;
+      transition: transform 0.2s;
+    }
+    .modal-btn:active { transform: scale(0.97); }
+
+    /* FORM WARNING ALERT BOXES & BOOTSTRAP VALIDATION */
+    .form-warning-box {
+      background: #ffe6e6;
+      border: 1px solid #ff4d4d;
+      color: #cc0000;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: none;
+      text-align: center;
+      animation: shakeWarning 0.4s ease-in-out;
+    }
+    @keyframes shakeWarning {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    
+    .invalid-feedback {
+      display: none;
+      color: #dc3545;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 4px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .is-invalid + .invalid-feedback,
+    .is-invalid ~ .invalid-feedback {
+      display: block;
+    }
+
+    .input-field.is-invalid {
+      border-color: #dc3545 !important;
+      background-color: #fff8f8 !important;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
+    }
+
+    .radio-group.is-invalid,
+    .toggle-group.is-invalid,
+    .registry-options.is-invalid {
+      border: 2px solid #dc3545 !important;
+      border-radius: 14px;
+      padding: 6px;
+      background-color: #fff8f8 !important;
+    }
+
+    /* Landscape Restriction Warning */
+    #landscape-warning {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: var(--bg); color: var(--text); z-index: 999999;
+      flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;
+    }
+    #landscape-warning svg { margin-bottom: 20px; stroke: var(--accent); animation: rotatePhone 2s infinite ease-in-out; }
+    #landscape-warning h2 { font-size: 1.8rem; margin-bottom: 10px; font-family: 'Fredoka One', cursive; }
+    #landscape-warning p { font-size: 1.1rem; font-weight: 600; color: var(--text-light); }
+    @keyframes rotatePhone { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
+    @media screen and (orientation: landscape) and (max-height: 600px) {
+      #landscape-warning { display: flex; }
+      #app, #curtain-layer, .audio-ctrl, #page-loader { display: none !important; }
+    }
+
+    /* Minimal Page Loader Loop Spinner */
+    #page-loader {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #111;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #page-loader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid rgba(242, 166, 41, 0.2);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spinLoader 0.8s linear infinite;
+    }
+    @keyframes spinLoader {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Minimal Page Loader -->
+  <div id="page-loader">
+    <div class="loader-spinner"></div>
+  </div>
+  
+  <!-- Landscape Warning -->
+  <div id="landscape-warning">
+    <svg viewBox="0 0 24 24" width="80" height="80" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+      <line x1="12" y1="18" x2="12.01" y2="18"></line>
+    </svg>
+    <h2>Please Rotate Your Device</h2>
+    <p>This invitation is made for portrait viewing.</p>
+  </div>
+
+  <!-- Audio Controller -->
+  <div id="audio-ctrl" class="audio-ctrl">
+    <!-- Muted Icon -->
+    <svg id="icon-muted" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <line x1="23" y1="9" x2="17" y2="15"></line>
+      <line x1="17" y1="9" x2="23" y2="15"></line>
+    </svg>
+    <!-- Unmuted Icon -->
+    <svg id="icon-unmuted" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+    </svg>
+  </div>
+  <audio id="bg-music" loop>
+    <source src="images/the_mountain-happy-birthday-576570.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="app">
+    
+    <!-- 1. OPENING SEQUENCE -->
+    <div id="curtain-layer">
+      <video id="curtain-video" playsinline disablePictureInPicture fetchpriority="high" preload="auto">
+        <source src="images/EnvelopAudioHoney.mp4" type="video/mp4"> 
+      </video>
+      <div class="tap-overlay">
+        <span class="tap-text" id="tap-text">Tap to Open</span>
+      </div>
+    </div>
+    
+    <!-- MAIN CONTENT WRAPPER -->
+    <div id="main-content">
+    
+    <!-- 2. HERO SECTION -->
+    <section class="section hero-sec">
+      <div class="heroTop">
+        <p class="section-subtitle">YOU'RE INVITED TO CELEBRATE</p>
+      <h1 class="script-font">Baby's First<br>Birthday!</h1>
+      </div>
+      <div class="heroBottom">
+        <h2 class="textShadowLight">A Little Honey is Turning One</h2>
+      <!-- ⏳ CHANGE DISPLAYED DATE & TIME HERE ⏳ -->
+      <p class="date">Sunday, May 16th, 2027 | 10:00 AM</p>
+
+      <div class="cd-grid">
+        <div class="cd-box"><span class="cd-num" id="cd-m">0</span><span class="cd-lbl">Months</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-w">0</span><span class="cd-lbl">Weeks</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-d">0</span><span class="cd-lbl">Days</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-h">0</span><span class="cd-lbl">Hrs</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-s">0</span><span class="cd-lbl">Secs</span></div>
+      </div>
+
+      <div class="scroll-down-indicator" id="scroll-indicator">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="7 13 12 18 17 13"></polyline>
+          <polyline points="7 6 12 11 17 6"></polyline>
+        </svg>
+      </div>
+      </div>
+      <div class="bee-container">
+        <img src="images/GiftHoney_2.webp" alt="Cartoon Bee" class="bee bee-glide" loading="eager" fetchpriority="high">
+        <img src="images/GiftHoney_2.webp" alt="Cartoon Bee" class="bee bee-search" loading="eager" fetchpriority="high">
+        <img src="images/GiftHoney_2.webp" alt="Cartoon Bee" class="bee bee-lift" loading="eager" fetchpriority="high">
+        <img src="images/GiftHoney_2.webp" alt="Cartoon Bee" class="bee bee-hop" loading="eager" fetchpriority="high">
+        <img src="images/GiftHoney_2.webp" alt="Cartoon Bee" class="bee bee-float" loading="eager" fetchpriority="high">
+      </div>
+    </section>
+
+    <!-- 3. CAROUSEL -->
+    <section class="section carousel-sec">
+  <p class="section-subtitle">LOOK WHO'S GROWING!</p>
+  <h2 class="section-title">Sweet Moments</h2>
+  
+  <div class="embla">
+    <div class="embla__container">
+      
+      <!-- Slide 1 -->
+      <div class="embla__slide">
+        <div class="polaroid" style="--r: 1;">
+          <!-- Top Right Static Bee -->
+          <img src="images/GiftHoney_1.webp" class="bee-overlay bee-top-right" alt="Bee Decor" loading="lazy">
+          
+          <img src="https://images.unsplash.com/photo-1608365151231-7dbed3034787?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Baby's First Smiles" class="main-photo" loading="lazy">
+          <span class="caption">First Smiles</span>
+          
+          <!-- Bottom Left Static Honey Bee -->
+          <img src="images/FrameSideHoney.webp" class="bee-overlay bee-bottom-left" alt="Bee with Honey Decor" loading="lazy">
+        </div>
+      </div>
+      
+      <!-- Slide 2 -->
+      <div class="embla__slide">
+        <div class="polaroid" style="--r: 0;">
+          <img src="images/GiftHoney_1.webp" class="bee-overlay bee-top-right" alt="Bee Decor" loading="lazy">
+          
+          <img src="https://images.unsplash.com/photo-1785438696802-7d138542b10d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Baby Playing" class="main-photo" loading="lazy">
+          <span class="caption">Playtime Fun</span>
+          
+          <img src="images/FrameSideHoney.webp" class="bee-overlay bee-bottom-left" alt="Bee with Honey Decor" loading="lazy">
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="embla__slide">
+        <div class="polaroid" style="--r: 2;">
+          <img src="images/GiftHoney_1.webp" class="bee-overlay bee-top-right" alt="Bee Decor" loading="lazy">
+          
+          <img src="https://images.unsplash.com/photo-1763013259083-c5be09bc166b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Baby Walking" class="main-photo" loading="lazy">
+          <span class="caption">Tiny Steps</span>
+          
+          <img src="images/FrameSideHoney.webp" class="bee-overlay bee-bottom-left" alt="Bee with Honey Decor" loading="lazy">
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="embla__slide">
+        <div class="polaroid" style="--r: 1;">
+          <img src="images/GiftHoney_1.webp" class="bee-overlay bee-top-right" alt="Bee Decor" loading="lazy">
+          
+          <!-- Replaced with a cute baby crawling/sitting moment -->
+          <img src="https://images.unsplash.com/photo-1739208682266-027b83924ccd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Baby sitting up" class="main-photo" loading="lazy">
+          <span class="caption">Almost One!</span>
+          
+          <img src="images/FrameSideHoney.webp" class="bee-overlay bee-bottom-left" alt="Bee with Honey Decor" loading="lazy">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+    <!-- 4. PARTY SCHEDULE -->
+    <section class="schedule-sec">
+  <div class="sticky-header">
+    <p class="section-subtitle">THE FUN AWAITS</p>
+    <h2 class="section-title" style="margin:0;">Party Schedule</h2>
+  </div>
+  
+  <div class="schedule-image-wrapper">
+    <!-- Edge to edge illustration -->
+    <img src="images/HoneyTree.webp" alt="Wooden Sign Schedule" class="schedule-bg-img" loading="lazy">
+    
+    <!-- Text Overlays -->
+    <div class="events-overlay">
+      
+      <!-- Event 1 (Top Board) -->
+      <!-- Adjusted top % to perfectly hit the center of the first plate -->
+      <div class="event-board" style="top: 33%;">
+        <p class="e-time">10:00 AM</p>
+        <h3 class="e-title">Welcome & Play</h3>
+      </div>
+
+      <!-- Event 2 (Middle Board) -->
+      <!-- Adjusted top % to perfectly hit the center of the second plate -->
+      <div class="event-board" style="top: 60%;">
+        <p class="e-time">11:30 AM</p>
+        <h3 class="e-title">Cake Cutting</h3>
+      </div>
+
+      <!-- Event 3 (Bottom Board) -->
+      <!-- Adjusted top % to perfectly hit the center of the third plate -->
+      <div class="event-board" style="top: 86%;">
+        <p class="e-time">12:30 PM</p>
+        <h3 class="e-title">Lunch & Goodbyes</h3>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+    <!-- 5. GIFT REGISTRY -->
+    <section class="section registry-sec">
+      <p class="section-subtitle">FOR THE BIRTHDAY STAR</p>
+      <h2 class="section-title">Book & Gift Raffle</h2>
+      <img src="images/GiftHoney.webp" alt="Gift & Toys Placeholder" class="registry-img" loading="lazy">
+      <p style="margin-bottom: 20px; font-weight: 500;">Bring a favorite storybook (signed with your sweet birthday wish) or a gift to be entered into our birthday raffle for a special prize!</p>
+      <button id="open-registry-btn" class="sign-board" style="border:none; cursor:pointer;">View Birthday Registry</button>
+    </section>
+
+    <!-- 6. RSVP FORM -->
+    <section class="section rsvp-sec">
+      <img src="images/HoneyCombFooter.webp" alt="Honeycomb Decor Left" class="form-hc form-hc-left" loading="lazy">
+      <img src="images/HoneyCombFooter.webp" alt="Honeycomb Decor Right" class="form-hc form-hc-right" loading="lazy">
+      <p class="section-subtitle textShadowDark" style="color: var(--bg-accent);">WE HOPE TO SEE YOU</p>
+      <h2 class="section-title">Kindly RSVP</h2>
+      
+      <div class="form-card">
+        <form id="rsvp-form">
+          <label class="form-label">Your Full Name*</label>
+          <input type="text" id="r-name" class="input-field" placeholder="E.g., Jane Doe">
+          <div class="invalid-feedback">Please enter your full name.</div>
+
+          <label class="form-label">Will you be able to attend?*</label>
+          <div class="radio-group" id="group-attendance">
+            <label class="radio-btn">
+              <input type="radio" name="attendance" value="Absolutely, wouldn't miss it!">
+              <span class="radio-text">Absolutely, wouldn't miss it!</span>
+            </label>
+            <label class="radio-btn">
+              <input type="radio" name="attendance" value="Sending love from afar.">
+              <span class="radio-text">Sending love from afar.</span>
+            </label>
+          </div>
+          <div class="invalid-feedback">Please select an attendance option.</div>
+
+          <label class="form-label">Will you be bringing a guest?*</label>
+          <div class="toggle-group" id="group-has-guest">
+            <label class="toggle-btn">
+              <input type="radio" name="has_guest" value="Yes" onchange="toggleGuestInput(true)">
+              <span class="toggle-text">Yes</span>
+            </label>
+            <label class="toggle-btn">
+              <input type="radio" name="has_guest" value="No" onchange="toggleGuestInput(false)">
+              <span class="toggle-text">No</span>
+            </label>
+          </div>
+          <div class="invalid-feedback">Please select if you are bringing a guest.</div>
+
+          <div id="guest-name-wrap" style="display:none;">
+            <label class="form-label">Guest Name(s)</label>
+            <input type="text" id="r-guests" class="input-field" placeholder="Name(s) of accompanying guests">
+          </div>
+
+          <label class="form-label">Leave a sweet birthday wish:</label>
+          <textarea id="r-msg" class="input-field" placeholder="Your birthday wishes..."></textarea>
+
+          <div id="rsvp-warning" class="form-warning-box">
+            Please fill out all required fields marked with *.
+          </div>
+
+          <button type="submit" class="submit-btn">Send RSVP via WhatsApp</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 7. FOOTER -->
+    <footer class="footer">
+      <p>Designed with ❤️ by <a href="https://shriiitrackingsolution.in/" target="_blank">STS</a></p> 
+      <div class="sign-off">THANK YOU</div>
+    </footer>
+    </div>
+  </div>
+
+  <!-- GIFT REGISTRY MODAL -->
+  <div id="registry-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close-btn">&times;</button>
+      <p class="modal-subtitle">GIFT & RAFFLE REGISTRY</p>
+      <h3 class="modal-title">Pledge A Gift</h3>
+      
+      <div id="reg-warning" class="form-warning-box">
+        Please enter your name and select a gift option!
+      </div>
+
+      <form id="registry-form">
+        <label class="form-label" style="margin-top: 10px;">Your Full Name*</label>
+        <input type="text" id="reg-name" class="input-field" placeholder="E.g., Jane Doe">
+        <div class="invalid-feedback">Please enter your full name.</div>
+
+        <label class="form-label">Select Gift Category*</label>
+        <div class="registry-options" id="group-gift-cat">
+          <label class="opt-card-radio">
+            <input type="radio" name="gift_cat" value="Storybook">
+            <div class="opt-card">
+              <span class="opt-icon">📚</span>
+              <div class="opt-info">
+                <h4>Storybook</h4>
+                <p>Children's book signed with a sweet wish inside</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="opt-card-radio">
+            <input type="radio" name="gift_cat" value="Educational Toys">
+            <div class="opt-card">
+              <span class="opt-icon">🧸</span>
+              <div class="opt-info">
+                <h4>Educational Toys</h4>
+                <p>Building blocks, wooden puzzles, plushies (Age 1+)</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="opt-card-radio">
+            <input type="radio" name="gift_cat" value="Clothes & Apparel">
+            <div class="opt-card">
+              <span class="opt-icon">👕</span>
+              <div class="opt-info">
+                <h4>Clothes & Apparel</h4>
+                <p>Cute outfits (Sizes 12M–18M) or accessories</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="opt-card-radio">
+            <input type="radio" name="gift_cat" value="Custom Surprise Gift">
+            <div class="opt-card">
+              <span class="opt-icon">🎁</span>
+              <div class="opt-info">
+                <h4>Custom Surprise Gift</h4>
+                <p>Any surprise gift chosen with love</p>
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="invalid-feedback">Please select a gift category.</div>
+
+        <label class="form-label">Gift Title / Item Details (Optional)</label>
+        <input type="text" id="reg-note" class="input-field" placeholder="E.g., The Very Hungry Caterpillar book">
+
+        <button type="submit" class="modal-btn">Pledge Gift via WhatsApp</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Embla Carousel Scripts -->
+  <script src="https://unpkg.com/embla-carousel/embla-carousel.umd.js"></script>
+  <script src="https://unpkg.com/embla-carousel-autoplay/embla-carousel-autoplay.umd.js"></script>
+
+  <script>
+    // PAGE LOADER SPINNER LOGIC
+    const pageLoader = document.getElementById('page-loader');
+    function hidePageLoader() {
+      if (pageLoader && !pageLoader.classList.contains('fade-out')) {
+        pageLoader.classList.add('fade-out');
+        setTimeout(() => { pageLoader.style.display = 'none'; }, 500);
+      }
+    }
+
+    // Scroll Restoration Lock
+    if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
+    window.scrollTo(0, 0);
+
+    const curtain = document.getElementById('curtain-layer');
+    const video = document.getElementById('curtain-video');
+    const tapText = document.getElementById('tap-text');
+    const audio = document.getElementById('bg-music');
+    let isOpened = false;
+
+    // Hide page loader as soon as video is ready or page loads
+    if (video) {
+      if (video.readyState >= 3) {
+        hidePageLoader();
+      } else {
+        video.addEventListener('canplaythrough', hidePageLoader, { once: true });
+        video.addEventListener('loadeddata', hidePageLoader, { once: true });
+      }
+    }
+    window.addEventListener('load', hidePageLoader);
+    setTimeout(hidePageLoader, 1800); // Safety fallback
+
+    // 1. OPENING SEQUENCE LOGIC
+    curtain.addEventListener('click', () => {
+      if(isOpened) return;
+      isOpened = true;
+      tapText.style.display = 'none';
+      
+      // Unlock audio on first interaction (required by mobile browsers)
+      audio.volume = 0;
+      audio.play().then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+      }).catch(e => console.log('Audio unlock failed', e));
+
+      // Trigger fade 1.2s before video ends for a seamless transition
+      video.ontimeupdate = () => {
+        if (video.duration && video.currentTime >= video.duration - 1.2) {
+          finishIntro();
+        }
+      };
+      video.onended = finishIntro;
+
+      // Play video
+      video.play().catch(e => console.log('Video play failed', e));
+      
+      // Fallback if video fails/ends early
+      setTimeout(() => { if(curtain.style.display !== 'none') finishIntro(); }, 5000);
+    });
+
+    let introFinished = false;
+    function finishIntro() {
+      if (introFinished) return;
+      introFinished = true;
+
+      // Start music after video and fade in
+      audio.volume = 0;
+      audio.play().catch(e => console.log('Audio play failed', e));
+      let vol = 0;
+      const fadeAudio = setInterval(() => {
+        if (vol < 0.4) {
+          vol += 0.05;
+          audio.volume = Math.min(vol, 0.4);
+        } else {
+          clearInterval(fadeAudio);
+        }
+      }, 200);
+
+      const mainContent = document.getElementById('main-content');
+      if (mainContent) {
+        mainContent.style.display = 'block';
+        setTimeout(() => {
+          mainContent.style.opacity = '1';
+        }, 50);
+      }
+      if (curtain) {
+        curtain.style.pointerEvents = 'none';
+        curtain.style.opacity = '0';
+        setTimeout(() => {
+          curtain.style.display = 'none';
+          try { video.pause(); } catch(e) {}
+          document.body.classList.add('unlocked');
+          const scrollInd = document.getElementById('scroll-indicator');
+          if (scrollInd) scrollInd.classList.add('visible');
+        }, 1200);
+      } else {
+        document.body.classList.add('unlocked');
+        const scrollInd = document.getElementById('scroll-indicator');
+        if (scrollInd) scrollInd.classList.add('visible');
+      }
+    }
+
+
+
+    // 2. AUDIO CONTROLLER
+    const audioCtrl = document.getElementById('audio-ctrl');
+    const iconMuted = document.getElementById('icon-muted');
+    const iconUnmuted = document.getElementById('icon-unmuted');
+
+    audioCtrl.addEventListener('click', () => {
+      if (audio.muted) {
+        audio.muted = false;
+        audio.play().catch(e => console.log(e));
+        iconMuted.style.display = 'none';
+        iconUnmuted.style.display = 'block';
+      } else {
+        audio.muted = true;
+        iconMuted.style.display = 'block';
+        iconUnmuted.style.display = 'none';
+      }
+    });
+
+    // 3. SCROLL DOWN INDICATOR FADEOUT
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 50) {
+        document.getElementById('scroll-indicator').classList.add('hidden');
+      }
+    });
+
+    // 4. COUNTDOWN TIMER (Months, Weeks, Days, Hours, Secs)
+    /* 
+     * ==========================================
+     * ⏳ HOW TO CHANGE THE PARTY DATE & TIME ⏳
+     * ==========================================
+     * Change the date string inside the quotes below.
+     * Format: "Month Day, Year HH:MM:SS"
+     * Example: "December 25, 2027 14:30:00"
+     */
+    const targetDate = new Date("May 16, 2027 10:00:00").getTime();
+    
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff > 0) {
+        // Calculate units
+        const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+        const weeks = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24 * 7));
+        const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('cd-m').innerText = months;
+        document.getElementById('cd-w').innerText = weeks;
+        document.getElementById('cd-d').innerText = days;
+        document.getElementById('cd-h').innerText = hours;
+        document.getElementById('cd-s').innerText = secs;
+      }
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 5. EMBLA CAROUSEL INIT
+    const emblaNode = document.querySelector('.embla');
+    const options = { loop: true };
+    const emblaApi = EmblaCarousel(emblaNode, options, [EmblaCarouselAutoplay()]);
+
+    // 6. RSVP FORM LOGIC
+    function toggleGuestInput(show) {
+      document.getElementById('guest-name-wrap').style.display = show ? 'block' : 'none';
+    }
+
+    const rsvpForm = document.getElementById('rsvp-form');
+    const rsvpWarning = document.getElementById('rsvp-warning');
+
+    // Remove is-invalid on change/input
+    document.querySelectorAll('#rsvp-form input').forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('is-invalid');
+        const parentGroup = input.closest('.radio-group, .toggle-group');
+        if (parentGroup) parentGroup.classList.remove('is-invalid');
+      });
+      input.addEventListener('change', () => {
+        input.classList.remove('is-invalid');
+        const parentGroup = input.closest('.radio-group, .toggle-group');
+        if (parentGroup) parentGroup.classList.remove('is-invalid');
+      });
+    });
+
+    rsvpForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const nameEl = document.getElementById('r-name');
+      const name = nameEl.value.trim();
+      const attendanceEl = document.getElementById('group-attendance');
+      const attendance = document.querySelector('input[name="attendance"]:checked')?.value;
+      const hasGuestEl = document.getElementById('group-has-guest');
+      const hasGuest = document.querySelector('input[name="has_guest"]:checked')?.value;
+      const guests = document.getElementById('r-guests').value.trim();
+      const msg = document.getElementById('r-msg').value.trim();
+
+      nameEl.classList.remove('is-invalid');
+      if (attendanceEl) attendanceEl.classList.remove('is-invalid');
+      if (hasGuestEl) hasGuestEl.classList.remove('is-invalid');
+      if (rsvpWarning) rsvpWarning.style.display = 'none';
+
+      let isValid = true;
+      if (!name) {
+        nameEl.classList.add('is-invalid');
+        isValid = false;
+      }
+      if (!attendance) {
+        if (attendanceEl) attendanceEl.classList.add('is-invalid');
+        isValid = false;
+      }
+      if (!hasGuest) {
+        if (hasGuestEl) hasGuestEl.classList.add('is-invalid');
+        isValid = false;
+      }
+
+      if (!isValid) {
+        if (rsvpWarning) {
+          rsvpWarning.style.display = 'block';
+        }
+        return;
+      }
+
+      let text = `*RSVP — Alice's Birthday Party*\n\n`;
+      text += `*Name:* ${name}\n`;
+      text += `*Attendance:* ${attendance}\n`;
+      text += `*Bringing Guest:* ${hasGuest}\n`;
+      
+      if(hasGuest === 'Yes' && guests) {
+        text += `*Guest Name(s):* ${guests}\n`;
+      }
+      if(msg) {
+        text += `\n*Birthday Wish:* ${msg}\n`;
+      }
+
+      const encodedText = encodeURIComponent(text);
+      const hostNumber = "918200482291";
+      window.open(`https://wa.me/${hostNumber}?text=${encodedText}`, '_blank');
+
+      // RESET FORM UPON SUBMISSION
+      rsvpForm.reset();
+      toggleGuestInput(false);
+    });
+
+    // 7. GIFT REGISTRY MODAL FORM LOGIC
+    const regModal = document.getElementById('registry-modal');
+    const openRegBtn = document.getElementById('open-registry-btn');
+    const closeRegBtn = document.getElementById('modal-close-btn');
+    const regForm = document.getElementById('registry-form');
+    const regWarning = document.getElementById('reg-warning');
+
+    // Remove is-invalid on modal form changes
+    document.querySelectorAll('#registry-form input').forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('is-invalid');
+        const parentGroup = input.closest('.registry-options');
+        if (parentGroup) parentGroup.classList.remove('is-invalid');
+      });
+      input.addEventListener('change', () => {
+        input.classList.remove('is-invalid');
+        const parentGroup = input.closest('.registry-options');
+        if (parentGroup) parentGroup.classList.remove('is-invalid');
+      });
+    });
+
+    function openModal() {
+      if (regModal) regModal.classList.add('active');
+    }
+    function closeModal() {
+      if (regModal) {
+        regModal.classList.remove('active');
+        if (regWarning) regWarning.style.display = 'none';
+        const nameEl = document.getElementById('reg-name');
+        if (nameEl) nameEl.classList.remove('is-invalid');
+        const giftCatEl = document.getElementById('group-gift-cat');
+        if (giftCatEl) giftCatEl.classList.remove('is-invalid');
+      }
+    }
+
+    if (openRegBtn) openRegBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+    if (closeRegBtn) closeRegBtn.addEventListener('click', closeModal);
+    if (regModal) {
+      regModal.addEventListener('click', (e) => {
+        if (e.target === regModal) closeModal();
+      });
+    }
+
+    if (regForm) {
+      regForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const nameEl = document.getElementById('reg-name');
+        const name = nameEl.value.trim();
+        const giftCatEl = document.getElementById('group-gift-cat');
+        const giftCat = document.querySelector('input[name="gift_cat"]:checked')?.value;
+        const note = document.getElementById('reg-note').value.trim();
+
+        nameEl.classList.remove('is-invalid');
+        if (giftCatEl) giftCatEl.classList.remove('is-invalid');
+        if (regWarning) regWarning.style.display = 'none';
+
+        let isValid = true;
+        if (!name) {
+          nameEl.classList.add('is-invalid');
+          isValid = false;
+        }
+        if (!giftCat) {
+          if (giftCatEl) giftCatEl.classList.add('is-invalid');
+          isValid = false;
+        }
+
+        if (!isValid) {
+          if (regWarning) regWarning.style.display = 'block';
+          return;
+        }
+
+        let text = `*Birthday Gift Raffle Pledge*\n\n`;
+        text += `*Guest Name:* ${name}\n`;
+        text += `*Gift Category:* ${giftCat}\n`;
+        if (note) {
+          text += `*Item / Note:* ${note}\n`;
+        }
+
+        const encodedText = encodeURIComponent(text);
+        const hostNumber = "918200482291";
+        window.open(`https://wa.me/${hostNumber}?text=${encodedText}`, '_blank');
+
+        // RESET & CLOSE FORM
+        regForm.reset();
+        closeModal();
+      });
+    }
+
+  </script>
+</body>
+</html>
