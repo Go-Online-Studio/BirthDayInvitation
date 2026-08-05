@@ -1028,17 +1028,26 @@
     const audio = document.getElementById('bg-music');
     let isOpened = false;
 
-    // Hide page loader as soon as video is ready or page loads
+    // Preload video as Blob to bypass Safari limitations and guarantee download before hiding loader
     if (video) {
-      if (video.readyState >= 3) {
-        hidePageLoader();
-      } else {
-        video.addEventListener('canplaythrough', hidePageLoader, { once: true });
-        video.addEventListener('loadeddata', hidePageLoader, { once: true });
-      }
+      const videoSrc = video.querySelector('source').src;
+      fetch(videoSrc)
+        .then(response => response.blob())
+        .then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          video.src = blobUrl;
+          video.load();
+          hidePageLoader();
+        })
+        .catch(err => {
+          console.error('Video preload failed', err);
+          hidePageLoader();
+        });
+    } else {
+      window.addEventListener('load', hidePageLoader);
     }
-    window.addEventListener('load', hidePageLoader);
-    setTimeout(hidePageLoader, 1800); // Safety fallback
+    
+    setTimeout(hidePageLoader, 8000); // 8-second safety fallback if network is extremely slow
 
     // 1. OPENING SEQUENCE LOGIC
     curtain.addEventListener('click', () => {
