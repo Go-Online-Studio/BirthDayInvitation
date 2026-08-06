@@ -711,8 +711,8 @@
     
     <!-- 1. OPENING SEQUENCE -->
     <div id="curtain-layer">
-      <video id="curtain-video" muted playsinline disablePictureInPicture fetchpriority="high" preload="auto">
-        <source src="images/EnvelopAudioHoney.mp4" type="video/mp4"> 
+      <video id="curtain-video" muted playsinline webkit-playsinline disablePictureInPicture preload="auto" x-webkit-airplay="deny">
+        <source src="images/EnvelopAudioHoney.mp4" type="video/mp4">
       </video>
       <div class="tap-overlay">
         <span class="tap-text" id="tap-text">Tap to Open</span>
@@ -1009,12 +1009,32 @@
   <script src="https://unpkg.com/embla-carousel-autoplay/embla-carousel-autoplay.umd.js"></script>
 
   <script>
-    // PAGE LOADER SPINNER LOGIC
+    // ── PAGE LOADER & VIDEO PRELOAD LOGIC ──────────────────────────────────────
+    //
+    // Strategy: Keep the loader visible until the curtain video is ACTUALLY
+    // buffered and ready to play. This guarantees a seamless experience on
+    // all browsers including iOS Safari, which has strict media autoplay and
+    // blob-URL restrictions that break the old fetch()->blob approach.
+    //
+    // iOS/Safari-safe approach:
+    //   1. Set video src directly (no blob URL rewriting — Safari blocks it)
+    //   2. Call video.load() to trigger network fetch
+    //   3. Autoplay silently (muted) in background so the video is already
+    //      decoded and positioned at frame 0 when the user taps
+    //   4. Listen for canplaythrough / loadeddata events
+    //   5. Poll readyState via rAF as a Safari fallback (events may not fire)
+    //   6. Hard-cap at 12 s; gentle nudge at 6 s for very slow connections
+    // ──────────────────────────────────────────────────────────────────────────
+
     const pageLoader = document.getElementById('page-loader');
+    let loaderHidden = false;
+
     function hidePageLoader() {
-      if (pageLoader && !pageLoader.classList.contains('fade-out')) {
+      if (loaderHidden) return;
+      loaderHidden = true;
+      if (pageLoader) {
         pageLoader.classList.add('fade-out');
-        setTimeout(() => { pageLoader.style.display = 'none'; }, 500);
+        setTimeout(() => { pageLoader.style.display = 'none'; }, 520);
       }
     }
 
@@ -1023,31 +1043,71 @@
     window.scrollTo(0, 0);
 
     const curtain = document.getElementById('curtain-layer');
-    const video = document.getElementById('curtain-video');
+    const video   = document.getElementById('curtain-video');
     const tapText = document.getElementById('tap-text');
-    const audio = document.getElementById('bg-music');
-    let isOpened = false;
+    const audio   = document.getElementById('bg-music');
+    let isOpened  = false;
 
-    // Preload video as Blob to bypass Safari limitations and guarantee download before hiding loader
+    // ── Video readiness detection (iOS/Safari-safe) ───────────────────────────
     if (video) {
-      const videoSrc = video.querySelector('source').src;
-      fetch(videoSrc)
-        .then(response => response.blob())
-        .then(blob => {
-          const blobUrl = URL.createObjectURL(blob);
-          video.src = blobUrl;
-          video.load();
-          hidePageLoader();
-        })
-        .catch(err => {
-          console.error('Video preload failed', err);
-          hidePageLoader();
+      let rafPollId = null;
+
+      function onVideoReady() {
+        // Stop polling and remove event listeners
+        if (rafPollId) { cancelAnimationFrame(rafPollId); rafPollId = null; }
+        video.removeEventListener('canplaythrough', onVideoReady);
+        video.removeEventListener('loadeddata',     onVideoReady);
+        // Pause & reset to frame 0 so user tapping sees the start
+        try { video.pause(); video.currentTime = 0; } catch(e) {}
+        hidePageLoader();
+      }
+
+      // Primary events — fire on most browsers
+      video.addEventListener('canplaythrough', onVideoReady, { once: true });
+      video.addEventListener('loadeddata',     onVideoReady, { once: true });
+
+      // Error fallback — hide loader even if video fails
+      video.addEventListener('error', () => {
+        console.warn('Video load error — hiding loader anyway');
+        hidePageLoader();
+      }, { once: true });
+
+      // rAF poll — critical for iOS Safari where events may silently not fire
+      function pollReadyState() {
+        // readyState 3 = HAVE_FUTURE_DATA, 4 = HAVE_ENOUGH_DATA
+        if (video.readyState >= 3) {
+          onVideoReady();
+        } else {
+          rafPollId = requestAnimationFrame(pollReadyState);
+        }
+      }
+      rafPollId = requestAnimationFrame(pollReadyState);
+
+      // Start loading the video (src already set via <source> tag)
+      video.load();
+
+      // Silently autoplay while loader is showing so Safari pre-decodes frames.
+      // This MUST be muted=true and playsinline to be allowed on iOS without user gesture.
+      video.muted = true;
+      const silentPlayPromise = video.play();
+      if (silentPlayPromise !== undefined) {
+        silentPlayPromise.catch(() => {
+          // Autoplay blocked (expected on some browsers) — poll will still fire
         });
+      }
+
     } else {
+      // No video element — hide loader on window load
       window.addEventListener('load', hidePageLoader);
     }
-    
-    setTimeout(hidePageLoader, 8000); // 8-second safety fallback if network is extremely slow
+
+    // Safety timeouts:
+    //   6 s  — gentle nudge: hide loader if video is partially buffered (readyState >= 2)
+    //  12 s  — hard cap: always hide regardless of state
+    setTimeout(() => {
+      if (!loaderHidden && video && video.readyState >= 2) hidePageLoader();
+    }, 6000);
+    setTimeout(hidePageLoader, 12000);
 
     // 1. OPENING SEQUENCE LOGIC
     curtain.addEventListener('click', () => {
