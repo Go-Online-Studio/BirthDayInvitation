@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
   
   <!-- Preload Critical First Section & Intro Video Assets -->
-  <link rel="preload" href="images/EnvelopAudioHoney.mp4" as="video" type="video/mp4" fetchpriority="high">
+  <link rel="preload" href="https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4" as="video" type="video/mp4" crossorigin="anonymous">
   <link rel="preload" href="images/HoneyThemeBanner.avif" as="image" fetchpriority="high">
   <link rel="preload" href="images/GiftHoney_2.webp" as="image" fetchpriority="high">
   <link rel="icon" href="data:,">
@@ -711,8 +711,9 @@
     
     <!-- 1. OPENING SEQUENCE -->
     <div id="curtain-layer">
-      <video id="curtain-video" muted playsinline webkit-playsinline disablePictureInPicture preload="auto" x-webkit-airplay="deny">
-        <source src="images/EnvelopAudioHoney.mp4" type="video/mp4">
+      <video id="curtain-video" playsinline webkit-playsinline x5-playsinline disablePictureInPicture fetchpriority="high" preload="auto">
+        <source src="https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
+        <source src="https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4" type="video/mp4">
       </video>
       <div class="tap-overlay">
         <span class="tap-text" id="tap-text">Tap to Open</span>
@@ -1083,18 +1084,34 @@
       }
       rafPollId = requestAnimationFrame(pollReadyState);
 
-      // Start loading the video (src already set via <source> tag)
+      // Safari / iOS detection
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      const isIOS    = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+      const HONEY_VIDEO_URL = "https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4";
+      let videoBlobReady = false;
+
+      // Warm up the WebKit / Safari media pipeline immediately
       video.load();
 
-      // Silently autoplay while loader is showing so Safari pre-decodes frames.
-      // This MUST be muted=true and playsinline to be allowed on iOS without user gesture.
-      video.muted = true;
-      const silentPlayPromise = video.play();
-      if (silentPlayPromise !== undefined) {
-        silentPlayPromise.catch(() => {
-          // Autoplay blocked (expected on some browsers) — poll will still fire
+      // Background fetch into a local Blob for instant 0ms latency on user tap
+      fetch(HONEY_VIDEO_URL, { mode: 'cors' })
+        .then(res => {
+          if (!res.ok) throw new Error('Fetch failed');
+          return res.blob();
+        })
+        .then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          // Only swap src if video hasn't started playing yet
+          if (video && video.paused && !videoBlobReady && (video.currentTime || 0) === 0) {
+            videoBlobReady = true;
+            video.src = blobUrl;
+            video.load();
+          }
+        })
+        .catch(err => {
+          console.log('Video blob pre-fetch failed, fallback to direct stream:', err);
         });
-      }
 
     } else {
       // No video element — hide loader on window load
@@ -1109,6 +1126,21 @@
     }, 6000);
     setTimeout(hidePageLoader, 12000);
 
+  // Safe play helper — mirrors GaneshaEntry.html pattern
+  // Called directly inside a click handler so Safari allows unmuted audio
+  function safePlayVideo() {
+    if (!video) return;
+    video.muted = false;
+    video.volume = 1.0;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(e => {
+        console.warn('Unmuted video play error (retry):', e);
+        video.play().catch(err => console.log('Final video play failure:', err));
+      });
+    }
+  }
+
     // 1. OPENING SEQUENCE LOGIC
     curtain.addEventListener('click', () => {
       if(isOpened) return;
@@ -1116,7 +1148,6 @@
       tapText.style.display = 'none';
       
       // Unlock audio on first interaction (required by mobile browsers)
-      // Explicitly unmute background element for Safari
       audio.volume = 0;
       audio.play().then(() => {
         audio.pause();
@@ -1131,9 +1162,8 @@
       };
       video.onended = finishIntro;
 
-      // Play video
-      video.muted = false;
-      video.play().catch(e => console.log('Video play failed', e));
+      // Play video with audio — synchronous call inside click = Safari unlocked
+      safePlayVideo();
       
       // Fallback if video fails/ends early
       setTimeout(() => { if(curtain.style.display !== 'none') finishIntro(); }, 5000);
