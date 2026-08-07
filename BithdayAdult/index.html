@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jessica's 18th - Bespoke Celebration</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Inter:wght@400;500;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <!-- Embla Carousel Scripts -->
+    <script src="https://unpkg.com/embla-carousel/embla-carousel.umd.js"></script>
+    <script src="https://unpkg.com/embla-carousel-autoplay/embla-carousel-autoplay.umd.js"></script>
+
+    <!-- Fancybox Gallery -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+
+    <style>
+        /* CSS Variables & Theme */
+        :root {
+            --bg-dark: #111111;
+            --surface: #f9f9ff;
+            --surface-alt: #f1f3fc;
+            --surface-chat: #ebedf7;
+            --on-surface: #181c22;
+            --on-surface-variant: #414753;
+            --outline: #c1c6d5;
+            --primary: #005ab4;
+            --on-primary: #ffffff;
+            --error: #ba1a1a;
+            
+            --font-display: 'Poiret One', cursive;
+            --font-body: 'Inter', sans-serif;
+            --font-script: 'Great Vibes', cursive;
+
+            --max-w: 480px;
+        }
+
+        /* Reset & Base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--on-surface);
+            font-family: var(--font-body);
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden; /* Locked initially */
+        }
+        body.unlocked {
+            overflow: auto;
+        }
+
+        /* Main Container */
+        .app-container {
+            width: 100%;
+            max-width: var(--max-w);
+            min-height: 100vh;
+            margin: 0 auto;
+            background-color: var(--surface);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Typography */
+        .script-text { font-family: var(--font-script); font-size: 3rem; color: var(--on-surface); line-height: 1.2; }
+        .display-text { font-family: var(--font-display); font-size: 7.5rem; line-height: 1; letter-spacing: -0.02em; }
+        .headline-text { font-family: var(--font-display); font-size: 2rem; line-height: 1.2; letter-spacing: 0.1em; text-transform: uppercase; }
+        .headline-text2{ font-family: var(--font-display); font-size: 18px; line-height: 1.2; letter-spacing: 0.1em; text-transform: uppercase; }
+        .label-caps { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--on-surface-variant); }
+        
+        /* Landscape Warning */
+        #landscape-warning {
+            display: none; position: fixed; inset: 0; z-index: 999999;
+            background: var(--bg-dark); color: #fff;
+            flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem;
+        }
+        #landscape-warning svg { width: 64px; height: 64px; margin-bottom: 1rem; animation: rotatePhone 2s infinite ease-in-out; stroke: #fff; fill: none; }
+        @keyframes rotatePhone { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } }
+        @media screen and (orientation: landscape) and (max-height: 500px) {
+            #landscape-warning { display: flex !important; }
+            .app-container, #envelope-overlay, .audio-ctrl { display: none !important; }
+        }
+
+        /* Intro Sequence Overlay — constrained to mobile container width */
+        #envelope-overlay {
+            position: absolute; top: 0; left: 0; z-index: 1000;
+            background: var(--bg-dark); display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 1s ease, visibility 1s ease;
+            cursor: pointer;
+            width: 100%; height: 100vh;
+            overflow: hidden;
+        }
+        #intro-video {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+            object-position: center top;
+        }
+        .tap-hint {
+            position: relative; z-index: 1010; font-family: var(--font-body);
+            color: #fff; font-size: 0.85rem; letter-spacing: 0.3em; text-transform: uppercase;
+            animation: pulse 2s infinite; background: rgba(0,0,0,0.5); padding: 12px 24px; border-radius: 30px;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } }
+
+        /* Audio Controller */
+        .audio-ctrl {
+            position: fixed; bottom: 25px; right: calc(50% - 240px + 25px); z-index: 100;
+            width: 50px; height: 50px; background: var(--primary); color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid #fff;
+            opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+        }
+        .audio-ctrl.visible { opacity: 1; pointer-events: auto; }
+        @media (max-width: 480px) { .audio-ctrl { right: 25px; } }
+
+        /* Scroll Arrow Indicator */
+        .scroll-down-indicator {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.8s ease; z-index: 10;
+        }
+        .scroll-down-indicator.visible { opacity: 1; pointer-events: auto; cursor: pointer; }
+        .scroll-down-indicator.hidden { opacity: 0 !important; pointer-events: none !important; }
+        .scroll-down-indicator svg {
+            width: 20px; height: 20px; stroke: var(--on-surface-variant);
+            animation: miniScrollBounce 1.5s infinite ease-in-out;
+        }
+        @keyframes miniScrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
+
+        /* Scroll Animations */
+        .anim-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .anim-up.in-view { opacity: 1; transform: translateY(0); }
+
+        /* Section Layouts */
+        .section { padding: 4rem 12px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        
+        /* 1. Hero */
+        .hero-sec { min-height: 100vh; background: var(--surface); padding-bottom: 6rem; }
+        .date-grid {
+            display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center;
+            border-top: 1px solid var(--outline); border-bottom: 1px solid var(--outline); padding: 1rem 0; margin-top: 2rem;
+            width: 100%; max-width: 320px;
+        }
+        .date-center { border-left: 1px solid var(--outline); border-right: 1px solid var(--outline); padding: 0 1rem; display: flex; flex-direction: column; }
+
+        /* 2. Countdown */
+        .countdown-sec { 
+            min-height: 350px; 
+            background: url('images/BackTexture.avif') center/cover no-repeat; 
+            position: relative; 
+            margin: 4rem 0;
+            color: #ffffff;
+        }
+        .countdown-sec .label-caps {
+            color: #ffffff;
+            opacity: 0.95;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .paper-top,
+        .paper-bottom {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: auto;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .paper-top {
+            top: 2.8%;
+            transform: translateY(-99%);
+        }
+        .paper-bottom {
+            bottom: 6.4%;
+            transform: translateY(99%);
+        }
+        .cd-wrapper { 
+            display: flex; align-items: flex-start; justify-content: center; 
+            font-family: var(--font-display); font-size: 2.8rem; color: #ffffff; 
+            width: 100%; gap: 0.5rem; 
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+        }
+        .cd-item { display: flex; flex-direction: column; align-items: center; min-width: 50px; }
+        .cd-sep { font-size: 2rem; color: #ffffff; opacity: 0.85; margin-top: 0.25rem; }
+
+        /* 3. Journey (Vertical Embla) */
+        .journey-sec { background: var(--surface-alt); min-height: 700px; flex-direction: row; gap: 8px; align-items: center; padding: 4rem 12px; }
+        .journey-carousel-wrap { width: 50%; height: 520px; position: relative; display: flex; flex-direction: column; }
+        .embla { overflow: hidden; flex: 1; }
+        .embla__container { display: flex; flex-direction: column; height: 100%; }
+        .embla__slide { flex: 0 0 auto; height: auto; padding-bottom: 0px; }
+        .polaroid { border: 6px solid var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); background: #fff; width: 100%; aspect-ratio: 3/4; }
+        .polaroid a { display: block; width: 100%; height: 100%; cursor: pointer; }
+        .polaroid img { width: 100%; height: 100%; object-fit: cover; }
+        .click-hint { 
+            font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; 
+            color: var(--primary); margin-top: 10px; text-align: center; 
+            display: flex; align-items: center; justify-content: center; gap: 5px; 
+            opacity: 0.9;
+        }
+        .journey-text { width: 50%; background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); padding: 10px; border-radius: 12px; border: 1px solid rgba(193,198,213,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: left; align-self: center; }
+
+        /* 4. Attire Collage */
+        .attire-sec { background: var(--surface); min-height: 800px; }
+        .collage { position: relative; width: 100%; max-width: 320px; aspect-ratio: 4/5; margin: 3rem auto 0; }
+        .col-1 { position: absolute; top: 0; left: 0; width: 66%; aspect-ratio: 3/4; border: 6px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 10; }
+        .col-2 { position: absolute; top: 25%; right: 0; width: 50%; aspect-ratio: 1/1; border: 6px solid #fff; box-shadow: 0 15px 40px rgba(0,0,0,0.15); z-index: 20; }
+        .col-3 { position: absolute; bottom: 0; left: 25%; width: 75%; aspect-ratio: 16/9; border: 6px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 30; }
+        .collage img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* 5. Chat & Details */
+        .details-sec { background: var(--surface-chat); min-height: 600px; }
+        
+        /* Mobile Device Mockup for Chat Box */
+        .chat-wrap { 
+            width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 1rem; 
+            min-height: 440px;
+            margin-top: 2rem; font-size: 0.85rem;
+            background: #ffffff;
+            border: 10px solid #111;
+            border-radius: 36px;
+            padding: 3rem 1.25rem 2rem; /* Top padding for notch */
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 0 0 2px #e0e0e0;
+        }
+        /* Dynamic Island / Notch */
+        .chat-wrap::before {
+            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 20px; background: #111;
+            border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+        }
+
+        .bubble { 
+            position: relative; padding: 12px 16px; border-radius: 18px; 
+            max-width: 85%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 1;
+        }
+        
+        /* Guest Bubble (Right) */
+        .bubble.guest { 
+            background: #f1f3fc; color: var(--on-surface); 
+            align-self: flex-end; border-bottom-right-radius: 4px; 
+        }
+        .bubble.guest::before {
+            content: ""; position: absolute; z-index: -1; bottom: 0; right: -8px;
+            height: 20px; width: 20px; background: #f1f3fc;
+            border-bottom-left-radius: 15px;
+        }
+        .bubble.guest::after {
+            content: ""; position: absolute; z-index: -1; bottom: 0; right: -10px;
+            width: 10px; height: 20px; background: #ffffff;
+            border-bottom-left-radius: 10px;
+        }
+        
+        /* Host Bubble (Left) */
+        .bubble.host { 
+            background: var(--primary); color: var(--on-primary); 
+            align-self: flex-start; border-bottom-left-radius: 4px; 
+            display: flex; gap: 10px; align-items: flex-start; text-align: left; 
+        }
+        .bubble.host::before {
+            content: ""; position: absolute; z-index: -1; bottom: 0; left: -8px;
+            height: 20px; width: 20px; background: var(--primary);
+            border-bottom-right-radius: 15px;
+        }
+        .bubble.host::after {
+            content: ""; position: absolute; z-index: -1; bottom: 0; left: -10px;
+            width: 10px; height: 20px; background: #ffffff;
+            border-bottom-right-radius: 10px;
+        }
+        
+        .btn-primary {
+            display: inline-block; background: var(--primary); color: var(--on-primary);
+            font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 16px 40px; border-radius: 50px; border: none; cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 90, 180, 0.3); transition: transform 0.2s, background 0.2s;
+            margin-top: 2.5rem;
+        }
+        .btn-primary:active { transform: scale(0.96); }
+
+        /* 6. Footer Banner */
+        .banner-sec { height: 530px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 3rem; }
+        .banner-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+        .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(24,28,34,0.9), transparent); z-index: 1; }
+        .banner-content { position: relative; z-index: 2; color: #fff; }
+        .footer-base { background: var(--bg-dark); text-align: center; padding: 2rem; border-top: 1px solid rgba(255,255,255,0.1); }
+
+        /* 7. RSVP Modal */
+        .modal-backdrop {
+            position: fixed; inset: 0; z-index: 10000;
+            background: rgba(24, 28, 34, 0.85); backdrop-filter: blur(8px);
+            display: flex; align-items: flex-end; justify-content: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s;
+        }
+        .modal-backdrop.active { opacity: 1; visibility: visible; }
+        .modal-card {
+            width: 100%; max-width: 480px; background: var(--surface);
+            border-top-left-radius: 24px; border-top-right-radius: 24px;
+            padding: 2rem 1.5rem; transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            max-height: 90vh; overflow-y: auto; position: relative;
+        }
+        .modal-backdrop.active .modal-card { transform: translateY(0); }
+        .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; cursor: pointer; }
+        .modal-close svg { width: 24px; height: 24px; stroke: var(--on-surface-variant); stroke-width: 2; }
+        
+        .form-group { display: flex; flex-direction: column; text-align: left; margin-bottom: 1.5rem; }
+        .form-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--on-surface); margin-bottom: 0.5rem; }
+        .form-input { 
+            width: 100%; padding: 12px 16px; border: 1px solid rgba(193,198,213,0.4); border-radius: 8px;
+            background: #fff; font-family: var(--font-body); font-size: 0.9rem; color: var(--on-surface); outline: none; transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: var(--primary); }
+        textarea.form-input { resize: vertical; min-height: 80px; }
+        
+        .toggle-wrap { display: flex; gap: 10px; flex-wrap: wrap; }
+        .toggle-btn { flex: 1; min-width: 120px; }
+        .toggle-btn input { display: none; }
+        .toggle-ui { 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 12px; border: 1px solid rgba(193,198,213,0.4); border-radius: 8px;
+            cursor: pointer; transition: all 0.2s; background: transparent; font-size: 0.85rem; text-align: center;
+        }
+        .toggle-btn input:checked + .toggle-ui { border-color: var(--primary); background: rgba(0,90,180,0.05); }
+        
+        /* Validation Classes */
+        .is-invalid .form-input, .is-invalid .toggle-ui { border-color: var(--error) !important; background: rgba(186,26,26,0.05) !important; }
+        .invalid-feedback { display: none; color: var(--error); font-size: 0.75rem; margin-top: 0.4rem; font-weight: 500; }
+        .is-invalid .invalid-feedback { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- Landscape Guard -->
+    <div id="landscape-warning">
+        <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+        <h2 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 10px;">Rotate Device</h2>
+        <p style="font-family: var(--font-body); font-size: 0.9rem; opacity: 0.8;">This experience is designed for portrait viewing.</p>
+    </div>
+
+    <!-- Background Audio -->
+    <audio id="bg-music" loop>
+        <source src="images/the_mountain-happy-birthday-576570.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- App Container -->
+    <div class="app-container" id="main-app">
+        
+        <!-- Opening Overlay -->
+        <div id="envelope-overlay">
+            <video id="intro-video" playsinline webkit-playsinline muted disablePictureInPicture preload="auto" poster="images/PosterThumb.webp">
+                <source src="https://res.cloudinary.com/dticzwbrv/video/upload/v1786104530/Envelopbirthdayblue_xdyjos.mp4" type="video/mp4">
+            </video>
+            <div class="tap-hint" id="tap-hint">TAP ANYWHERE TO OPEN</div>
+        </div>
+
+        <!-- Audio Controller -->
+        <div class="audio-ctrl" id="audio-ctrl">
+            <!-- Muted -->
+            <svg id="icon-muted" style="display:none;" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+            <!-- Unmuted -->
+            <svg id="icon-unmuted" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </div>
+
+        <!-- 1. Hero -->
+        <section class="section hero-sec">
+            <p class="label-caps anim-up" style="margin-bottom: 2rem;">Cheers to</p>
+            <h1 class="display-text anim-up" style="transition-delay: 0.1s;">18</h1>
+            <p class="label-caps anim-up" style="margin-top: 2rem; transition-delay: 0.2s;">Years</p>
+            
+            <p class="label-caps anim-up" style="margin-top: 3rem; transition-delay: 0.3s;">Let's toast to fabulous</p>
+            <h2 class="headline-text anim-up" style="margin-top: 0.5rem; transition-delay: 0.4s;">Jessica's 18th!</h2>
+
+            <div class="date-grid anim-up" style="transition-delay: 0.5s;">
+                <div class="label-caps">Saturday</div>
+                <div class="date-center">
+                    <span class="label-caps">July</span>
+                    <span class="headline-text" style="font-size: 2.5rem; margin: 5px 0;">22</span>
+                    <span class="label-caps">2027</span>
+                </div>
+                <div class="label-caps">At 8:30 PM</div>
+            </div>
+            
+            <p class="label-caps anim-up" style="margin-top: 1rem; opacity: 0.6; transition-delay: 0.6s;">8221 Sunset Blvd, West Hollywood</p>
+            
+            <!-- Scroll Indicator -->
+            <div class="scroll-down-indicator" id="scroll-indicator" onclick="document.querySelector('.countdown-sec').scrollIntoView({ behavior: 'smooth' })">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="7 13 12 18 17 13"></polyline>
+                    <polyline points="7 6 12 11 17 6"></polyline>
+                </svg>
+            </div>
+        </section>
+
+        <!-- 2. Countdown -->
+        <section class="section countdown-sec">
+            <img src="images/PaperPeternTop.webp" alt="Torn paper top" class="paper-top">
+            <img src="images/PaperPeternBottom.webp" alt="Torn paper bottom" class="paper-bottom">
+            <p class="label-caps anim-up" style="margin-bottom: 2rem;">The countdown begins</p>
+            <div class="cd-wrapper anim-up" style="transition-delay: 0.2s;">
+                <div class="cd-item"><span id="cd-d">00</span><span class="label-caps" style="margin-top: 5px;">Days</span></div>
+                <span class="cd-sep">:</span>
+                <div class="cd-item"><span id="cd-h">00</span><span class="label-caps" style="margin-top: 5px;">Hrs</span></div>
+                <span class="cd-sep">:</span>
+                <div class="cd-item"><span id="cd-m">00</span><span class="label-caps" style="margin-top: 5px;">Min</span></div>
+                <span class="cd-sep">:</span>
+                <div class="cd-item"><span id="cd-s">00</span><span class="label-caps" style="margin-top: 5px;">Sec</span></div>
+            </div>
+        </section>
+
+        <!-- 3. Journey (Vertical Carousel) -->
+        <section class="section journey-sec">
+            <div class="journey-carousel-wrap anim-up">
+                <div class="embla">
+                    <div class="embla__container">
+                        <div class="embla__slide">
+                            <div class="polaroid">
+                                <a href="images/BirthdayAdult1.avif" data-fancybox="gallery" data-caption="Childhood Memory">
+                                    <img src="images/BirthdayAdult1.avif" alt="Childhood">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="embla__slide">
+                            <div class="polaroid">
+                                <a href="images/BirthdayAdult2.avif" data-fancybox="gallery" data-caption="Growing Up">
+                                    <img src="images/BirthdayAdult2.avif" alt="Growth">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="embla__slide">
+                            <div class="polaroid">
+                                <a href="images/BirthdayAdult3.avif" data-fancybox="gallery" data-caption="Milestone 18th">
+                                    <img src="images/BirthdayAdult3.avif" alt="Milestone">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="click-hint">
+                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
+                    <span>Click to open</span>
+                </div>
+            </div>
+            <div class="journey-text anim-up" style="transition-delay: 0.2s;">
+                <h3 class="headline-text2" style="margin-bottom: 1rem;">A Journey of<br>18 Years</h3>
+                <p style="font-size: 0.85rem; line-height: 1.6; color: var(--on-surface-variant);">From the first steps to this milestone, every moment has been a treasure. We celebrate the laughter, the growth, and the beautiful soul Jessica has become.</p>
+            </div>
+        </section>
+
+        <!-- 4. Attire -->
+        <section class="section attire-sec">
+            <p class="label-caps anim-up">The</p>
+            <h2 class="headline-text anim-up" style="margin: 0.5rem 0;">Attire</h2>
+            <p class="label-caps anim-up" style="margin-top: 1rem;">Dress Code: Elegant & Gold</p>
+            <p class="anim-up" style="font-size: 0.8rem; margin-top: 1rem; color: var(--on-surface-variant); max-width: 280px;">Going all out in style — dress in elegant evening wear. Classy and refined.</p>
+            
+            <div class="collage anim-up" style="transition-delay: 0.2s;">
+                <div class="col-1"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq_3xs5e-wnoW5N20DF3elMaJeH2G6xTvlquyjkAO11E3PgWRosGtkZFrc-HFdtWzDhdSlFg9bRFeSrTwraSa_jrjyHTnUZw02MtuQukk-8ytiqhndVZhCjXuvonanfpQ_4N2deAZmM0cjiZxee9f5PR68rdmyYh91-vawwA7zaHBYbZFjL1tmD8eVwatgZq5Jz1iwXiiJI-6oiO2mzBMemv1b9MioU8Nze7QCqjUTCDE3WRRjTpzP" alt="Attire 1"></div>
+                <div class="col-2"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFOy2grAf4J8eApvZjGtXt3u8uYDfK86RjMxHhgavuG7jTbbz66g4KpOU6v7OFoba-bOkFFD4wRiGPXtcFRe7DUapIs8p8T7TyFBnJ50m2W90h8LsjgjzOJejgwfZqmZ_t1CMXujR6SBTx_Xln1DWEzkLqCnAdcKQKsa_9nFejouD3iHLm_vPsGOjvLGfDrrmxZu5JItGqMUUUHGNzAlpXajF_RZSG-NyJOvOoakhZtqSDBVJ30Tjl" alt="Attire 2"></div>
+                <div class="col-3"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2Wn9xyfCc738oEMJNYnrEUj5F9E4tNBXXIkhYPk0tg_NlYQThxnzASEVDYZd0Oiq4kOf9rtvToTrB-ju9NtOewoynBWMKkF-fJqKRQ2AqyezOI8t-L4k9OfSIBevPFLjzDGjYZS8OL6H-6P8B5z-6mCtSh8ARtKoF0hwpiBObfespL5OIFWJ6JdO2j7p30FHZbRxqN922Jlux5Tsb2Hppaij9nKfx1ckCiGkk3eX9-9BBmFwpi3YB" alt="Attire 3"></div>
+            </div>
+        </section>
+
+        <!-- 5. Chat & Details -->
+        <section class="section details-sec">
+            <p class="label-caps anim-up">The</p>
+            <h2 class="headline-text anim-up" style="margin-top: 0.5rem;">Details</h2>
+            
+            <div class="chat-wrap">
+                <div class="bubble guest anim-up">Can I bring someone?</div>
+                <div class="bubble host anim-up">Yes! Just mention it in your RSVP below.</div>
+                <div class="bubble guest anim-up" style="margin-top: 10px;">How about gifts?</div>
+                <div class="bubble host anim-up">
+                    <svg style="flex-shrink:0;" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M12 8v12"></path><path d="M16 8c0-2.2-1.8-4-4-4S8 5.8 8 8"></path></svg>
+                    <span>Your presence is the best gift! But if you wish, a contribution box will be available.</span>
+                </div>
+            </div>
+
+            <button class="btn-primary anim-up" onclick="toggleRSVP()">Click Here to RSVP</button>
+        </section>
+
+        <!-- 6. Footer Banner -->
+        <section class="banner-sec">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGeIBRj8bGBwI7L1Dxf1xT29KLMubG-W_zD3EM99V_uUZhqqpFoEqaUjwP-2dzouNs6JsPqh18VoiUe2f7lqeS4LM4XeoJfQvhb1Kj4RboA8xXxKGK-Ja4Miw8Tb0v1G-98ZGEGSMwwmme4Yn69SpGMEJhc-Umex5J7VXFUBRrM8iSwnq1N3GIbnWzf9pnAUjtVFF2bgFoyxM9qnzuv4wHamlBVfCsmcx01cM-956KP3qRIKGT9JrR" alt="Jessica" class="banner-bg">
+            <div class="banner-overlay"></div>
+            <div class="banner-content anim-up" style="text-align: center;">
+                <span class="label-caps" style="color: #fff; letter-spacing: 0.3em; display: block; margin-bottom: 0.5rem;">We'll</span>
+                <span style="font-family: var(--font-display); font-size: 2.5rem; display: block;">see you</span>
+                <span class="headline-text" style="color: #fff; display: block; margin-top: 0.5rem;">THERE!</span>
+            </div>
+        </section>
+        
+        <footer class="footer-base">
+            <p class="label-caps" style="color: rgba(255,255,255,0.6);">Designed with ❤️ by <a href="https://shriiitrackingsolution.in/" target="_blank" style="color: inherit;">STS</a></p>
+        </footer>
+
+    </div>
+
+    <!-- RSVP Modal -->
+    <div class="modal-backdrop" id="rsvp-modal" onclick="closeModalOnOutsideClick(event)">
+        <div class="modal-card">
+            <button class="modal-close" onclick="toggleRSVP()" type="button">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <p class="label-caps" style="margin-bottom: 0.5rem;">We hope to see you</p>
+                <h2 class="headline-text" style="font-size: 1.8rem; text-transform: none;">Kindly RSVP</h2>
+            </div>
+
+            <form id="rsvp-form" novalidate>
+                <div class="form-group" id="group-name">
+                    <label class="form-label">Your Full Name*</label>
+                    <input type="text" id="rsvp-name" class="form-input" placeholder="E.g., Jane Doe">
+                    <div class="invalid-feedback">Please enter your full name.</div>
+                </div>
+
+                <div class="form-group" id="group-attendance">
+                    <label class="form-label">Will you be able to attend?*</label>
+                    <div class="toggle-wrap" style="flex-direction: column;">
+                        <label class="toggle-btn">
+                            <input type="radio" name="attendance" value="Absolutely, wouldn't miss it!">
+                            <div class="toggle-ui">Absolutely, wouldn't miss it!</div>
+                        </label>
+                        <label class="toggle-btn">
+                            <input type="radio" name="attendance" value="Sending love from afar.">
+                            <div class="toggle-ui">Sending love from afar.</div>
+                        </label>
+                    </div>
+                    <div class="invalid-feedback">Please select your attendance status.</div>
+                </div>
+
+                <div class="form-group" id="group-guest">
+                    <label class="form-label">Will you be bringing a guest?*</label>
+                    <div class="toggle-wrap">
+                        <label class="toggle-btn">
+                            <input type="radio" name="guest" value="Yes">
+                            <div class="toggle-ui">Yes</div>
+                        </label>
+                        <label class="toggle-btn">
+                            <input type="radio" name="guest" value="No">
+                            <div class="toggle-ui">No</div>
+                        </label>
+                    </div>
+                    <div class="invalid-feedback">Please indicate if you are bringing a guest.</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Leave a sweet birthday wish:</label>
+                    <textarea id="rsvp-msg" class="form-input" placeholder="Your birthday wishes..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Send RSVP via WhatsApp</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* 1. Initialization & Scroll Restraint */
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
+
+        const overlay = document.getElementById('envelope-overlay');
+        const video = document.getElementById('intro-video');
+        const hint = document.getElementById('tap-hint');
+        const audioCtrl = document.getElementById('audio-ctrl');
+        const audio = document.getElementById('bg-music');
+        const scrollInd = document.getElementById('scroll-indicator');
+        let isOpened = false;
+
+        /* 2. Opening Sequence & Audio Unlock */
+        overlay.addEventListener('click', () => {
+            if(isOpened) return;
+            isOpened = true;
+            hint.style.display = 'none';
+            
+            // Unlock audio immediately on first interaction
+            audio.volume = 0;
+            audio.play().then(() => {
+                audio.pause(); // Unlocked, now pause until video ends
+            }).catch(e => console.log('Audio unlock failed', e));
+
+            // Play video
+            video.muted = false;
+            video.play().catch(e => console.log('Video play failed', e));
+
+            video.ontimeupdate = () => {
+                // Fade out 1 second before it ends for smoothness
+                if (video.duration && video.currentTime >= video.duration - 1) {
+                    revealApp();
+                }
+            };
+            video.onended = revealApp;
+
+            // Fallback just in case video hangs
+            setTimeout(() => { if(overlay.style.opacity !== '0') revealApp(); }, 6000);
+        });
+
+        let appRevealed = false;
+        function revealApp() {
+            if (appRevealed) return;
+            appRevealed = true;
+            
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.body.classList.add('unlocked');
+                audioCtrl.classList.add('visible');
+                scrollInd.classList.add('visible');
+                
+                // Resume BGM natively since it's already unlocked
+                audio.volume = 0.4;
+                audio.play().catch(e => console.log('Audio blocked by browser', e));
+                document.getElementById('icon-unmuted').style.display = 'block';
+                document.getElementById('icon-muted').style.display = 'none';
+            }, 1000);
+        }
+
+        /* 3. Audio Controller */
+        audioCtrl.addEventListener('click', () => {
+            if (audio.paused || audio.muted) {
+                audio.muted = false;
+                audio.play();
+                document.getElementById('icon-muted').style.display = 'none';
+                document.getElementById('icon-unmuted').style.display = 'block';
+            } else {
+                audio.pause();
+                document.getElementById('icon-unmuted').style.display = 'none';
+                document.getElementById('icon-muted').style.display = 'block';
+            }
+        });
+
+        /* Scroll Event to hide arrow indicator */
+        window.addEventListener('scroll', () => {
+            if(window.scrollY > 50) {
+                scrollInd.classList.add('hidden');
+            }
+        });
+
+        /* 4. Scroll Animations (Intersection Observer) */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+        document.querySelectorAll('.anim-up').forEach(el => observer.observe(el));
+
+        /* 5. Embla Vertical Carousel & Fancybox Init */
+        try {
+            const emblaNode = document.querySelector('.embla');
+            if (emblaNode && typeof EmblaCarousel !== 'undefined') {
+                const plugins = typeof EmblaCarouselAutoplay !== 'undefined' ? [EmblaCarouselAutoplay({ delay: 2000, stopOnInteraction: false })] : [];
+                EmblaCarousel(emblaNode, { axis: 'y', loop: true, dragFree: true }, plugins);
+            }
+        } catch (e) {
+            console.warn('Embla carousel init skipped:', e);
+        }
+
+        try {
+            if (typeof Fancybox !== 'undefined') {
+                Fancybox.bind('[data-fancybox="gallery"]', {
+                    Hash: false,
+                    Thumbs: false
+                });
+            }
+        } catch (e) {
+            console.warn('Fancybox init skipped:', e);
+        }
+
+        /* 6. Dynamic Countdown Timer */
+        // Target date set in the future (July 22, 2027 20:30:00)
+        const targetDate = new Date("2027-07-22T20:30:00").getTime();
+        
+        function updateCountdown() {
+            const now = Date.now();
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('cd-d').innerText = days.toString().padStart(2, '0');
+                document.getElementById('cd-h').innerText = hours.toString().padStart(2, '0');
+                document.getElementById('cd-m').innerText = mins.toString().padStart(2, '0');
+                document.getElementById('cd-s').innerText = secs.toString().padStart(2, '0');
+            } else {
+                document.getElementById('cd-d').innerText = '00';
+                document.getElementById('cd-h').innerText = '00';
+                document.getElementById('cd-m').innerText = '00';
+                document.getElementById('cd-s').innerText = '00';
+            }
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        /* 7. RSVP Modal & Validation */
+        const rsvpModal = document.getElementById('rsvp-modal');
+        const rsvpForm = document.getElementById('rsvp-form');
+
+        function toggleRSVP() {
+            rsvpModal.classList.toggle('active');
+        }
+
+        function closeModalOnOutsideClick(e) {
+            if (e.target === rsvpModal) toggleRSVP();
+        }
+
+        // Clear invalid states on input
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('input', () => el.closest('.form-group').classList.remove('is-invalid'));
+            el.addEventListener('change', () => el.closest('.form-group').classList.remove('is-invalid'));
+        });
+
+        rsvpForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            const nameInput = document.getElementById('rsvp-name');
+            const attendance = document.querySelector('input[name="attendance"]:checked');
+            const guest = document.querySelector('input[name="guest"]:checked');
+            const msg = document.getElementById('rsvp-msg').value.trim();
+
+            if (!nameInput.value.trim()) {
+                document.getElementById('group-name').classList.add('is-invalid');
+                isValid = false;
+            }
+            if (!attendance) {
+                document.getElementById('group-attendance').classList.add('is-invalid');
+                isValid = false;
+            }
+            if (!guest) {
+                document.getElementById('group-guest').classList.add('is-invalid');
+                isValid = false;
+            }
+
+            if (isValid) {
+                let text = `*RSVP — Jessica's 18th Birthday*\n\n`;
+                text += `*Name:* ${nameInput.value.trim()}\n`;
+                text += `*Attendance:* ${attendance.value}\n`;
+                text += `*Bringing Guest:* ${guest.value}\n`;
+                if(msg) text += `\n*Message:* ${msg}\n`;
+
+                const encodedMessage = encodeURIComponent(text);
+                window.open('https://wa.me/918200482291?text=' + encodedMessage, '_blank');
+                
+                rsvpForm.reset();
+                toggleRSVP();
+            }
+        });
+    </script>
+</body>
+</html>
