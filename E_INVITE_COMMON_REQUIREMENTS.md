@@ -104,9 +104,9 @@ window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
 - Couple names in script or serif font.
 
 ### 6.2 Mandatory Credit Line
-Every invitation footer **must** conclude with the official STS credit link:
+Every invitation footer **must** conclude with the official Invite Box credit link:
 ```html
-<p class="made-with-love">Designed with ❤️ by <a href="https://shriiitrackingsolution.in/" target="_blank" rel="noreferrer">STS</a></p>
+<p class="made-with-love">Designed by <a href="https://invitebox.in/" target="_blank" rel="noreferrer">Invite&nbsp;Box</a></p>
 ```
 
 ---
@@ -153,6 +153,6 @@ Every invitation footer **must** conclude with the official STS credit link:
 - [ ] Small bouncing scroll-down arrow (`.scroll-down-indicator`) revealed upon scroll unlock.
 - [ ] Auto-playing background music with floating SVG toggle button (`#mfab`).
 - [ ] Interactive RSVP form connecting to host WhatsApp API.
-- [ ] Standard footer with `Designed with ❤️ by STS` link (`https://shriiitrackingsolution.in/`).
+- [ ] Standard footer with `Designed by Invite Box` link (`https://invitebox.in/`).
 - [ ] **100% Inline SVG icons** (zero FontAwesome / icon webfont libraries).
 - [ ] Embla Carousel for photo galleries with auto-play capabilities.
