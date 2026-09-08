@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Baby's Birthday Invitation</title>
   
   <!-- Fonts: Fredoka One (for titles) & Quicksand (for text) -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
   
   <!-- Preload Critical First Section & Intro Video Assets -->
-  <link rel="preload" href="https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4" as="video" type="video/mp4" crossorigin="anonymous">
-  <link rel="preload" href="images/HoneyThemeBanner.avif" as="image" fetchpriority="high">
+  <link rel="preload" href="https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4" as="video" type="video/mp4" media="(max-width: 767px)" crossorigin="anonymous">
+  <link rel="preload" href="https://res.cloudinary.com/dticzwbrv/video/upload/v1788851494/Bearvideo_Desktop_aknccn.mp4" as="video" type="video/mp4" media="(min-width: 768px)" crossorigin="anonymous">
+  <link rel="preload" href="images/HoneyThemeBanner.avif" as="image" media="(max-width: 767px)" fetchpriority="high">
+  <link rel="preload" href="images/HoneyThemeBanner_Desktop.jpg" as="image" media="(min-width: 768px)" fetchpriority="high">
   <link rel="preload" href="images/GiftHoney_2.webp" as="image" fetchpriority="high">
   <link rel="icon" href="data:,">
   
@@ -28,6 +30,7 @@
       --white: #ffffff;
       --border: rgba(92, 67, 49, 0.1);
       --max-w: 480px;
+      --content-max-w: 1200px;
     }
 
 
@@ -63,8 +66,8 @@
     h1, h2, h3, .title-font { font-family: 'Fredoka One', cursive; font-weight: normal; }
     .script-font { font-family: 'Pacifico', cursive; font-weight: normal; }
     
-    .section-title { font-size: 2.2rem; color: var(--text); margin-bottom: 12px; text-align: center; line-height: 1.2; text-shadow: 2px 2px 0px rgba(255,255,255,0.7); }
-    .section-subtitle { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; text-align: center; }
+    .section-title { font-size: clamp(2.2rem, 6vw, 4rem); color: var(--text); margin-bottom: 12px; text-align: center; line-height: 1.2; text-shadow: 2px 2px 0px rgba(255,255,255,0.7); }
+    .section-subtitle { font-size: clamp(0.85rem, 2.5vw, 1.8rem); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; text-align: center; }
 
     /* MAIN CONTENT WRAPPER */
     #main-content {
@@ -77,8 +80,8 @@
 
     /* ══ 1. OPENING SEQUENCE ══ */
     #curtain-layer {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100vh;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
       z-index: 1000;
       background: #000;
       display: flex; align-items: flex-start; justify-content: center;
@@ -89,7 +92,7 @@
     #curtain-video {
       position: absolute;
       top: 0; left: 50%; transform: translateX(-50%);
-      width: 100%; height: 100%; min-width: 448px;
+      width: 100%; height: 100%;
       object-fit: cover;
       pointer-events: none;
     }
@@ -112,13 +115,234 @@
     @keyframes tapPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
 
     /* ══ 2. HERO / WELCOME SECTION ══ */
-    .section { padding: 30px 16px 20px; position: relative; z-index: 2; }
+    .section { padding: clamp(30px, 6vw, 80px) clamp(16px, 5vw, 60px) clamp(20px, 5vw, 60px); position: relative; z-index: 2; }
     .hero-sec { 
       text-align: center; 
       min-height: 100vh; 
       display: flex; flex-direction: column; 
       justify-content: center; align-items: center; 
       background: url('images/HoneyThemeBanner.avif') center/cover no-repeat; /* Semi transparent for watercolor bg */
+    }
+
+      .hero-sec .script-font { font-size: clamp(3.5rem, 8vw, 6rem); color: var(--accent); line-height: 1.1; margin: clamp(20px, 4vw, 40px) 0; transform: rotate(-5deg); text-shadow: 1px 1px 4px #fdfaf6cc; }
+
+
+    @media (min-width: 768px) {
+      /* Full viewport width edge-to-edge invitation canvas */
+      #app {
+        max-width: 100% !important;
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+      }
+
+      #main-content {
+        width: 100%;
+      }
+
+      /* ══ 2. HERO / WELCOME SECTION (Custom banner with left clean area & right bear/honey) ══ */
+      .hero-sec {
+        background-image: url('images/HoneyThemeBanner_Desktop.jpg');
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start; /* Aligns text & countdown to the left clean area */
+        text-align: left;
+        padding: clamp(40px, 6vh, 80px) clamp(40px, 6vw, 100px);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-sec .heroTop,
+      .hero-sec .heroBottom {
+        width: 100%;
+        max-width: min(650px, 52vw); /* Keeps content on the left clean area */
+        margin-left: 0;
+        margin-right: auto;
+        text-align: left;
+        position: relative;
+        z-index: 5;
+      }
+      .hero-sec .heroTop {
+        margin-bottom: clamp(15px, 2.5vh, 35px);
+      }
+      .hero-sec .section-subtitle {
+        text-align: left;
+        margin-bottom: 6px;
+      }
+      .hero-sec .script-font {
+        text-align: left;
+        margin: clamp(10px, 2vw, 25px) 0;
+        transform: rotate(-3deg);
+        transform-origin: left center;
+        line-height: 1.4;
+      }
+      .hero-sec h2 {
+        text-align: left;
+      }
+      .hero-sec .date {
+        text-align: left;
+        margin-top: clamp(8px, 1.5vw, 16px);
+      }
+      .hero-sec .cd-grid {
+        justify-content: flex-start; /* Countdown boxes on left */
+        max-width: 520px;
+        margin-top: clamp(12px, 2vw, 24px);
+        margin-left: 0;
+        margin-right: auto;
+        gap: clamp(8px, 1.2vw, 16px);
+      }
+      .hero-sec .scroll-down-indicator {
+        position: absolute;
+        bottom: 25px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 15;
+      }
+      /* Animated bees flying on right side over bear and honey */
+      .hero-sec .bee-container {
+        position: absolute;
+        top: 50%;
+        left: auto;
+        right: clamp(15px, 10vw, 230px);
+        width: clamp(380px, 45vw, 650px);
+        height: 65%;
+        transform: translateY(-35%);
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      /* ══ 3. CAROUSEL SECTION (Full width, 4 images at once view) ══ */
+      .carousel-sec {
+        width: 100%;
+        padding: clamp(40px, 5vw, 70px) clamp(20px, 3vw, 50px);
+        overflow: hidden;
+      }
+      .carousel-sec .section-subtitle,
+      .carousel-sec .section-title {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .carousel-sec .embla {
+        width: 100%;
+        max-width: 100%;
+        padding: 40px 0;
+        overflow: visible;
+      }
+      .carousel-sec .embla__container {
+        display: flex;
+        width: 100%;
+        gap: clamp(12px, 1.8vw, 24px);
+        margin-left: 0;
+        transform: none !important;
+      }
+      .carousel-sec .embla__slide {
+        flex: 0 0 calc(25% - (clamp(12px, 1.8vw, 24px) * 3 / 4));
+        min-width: 0;
+        padding-left: 0;
+        transform: none !important;
+      }
+      .carousel-sec .polaroid {
+        padding: clamp(12px, 1.5vw, 20px) clamp(12px, 1.5vw, 20px) clamp(35px, 4vw, 55px);
+      }
+      .carousel-sec .polaroid img.main-photo {
+        height: clamp(200px, 20vw, 340px);
+        width: 100%;
+        object-fit: cover;
+      }
+      .carousel-sec .polaroid .caption {
+        font-size: clamp(1.1rem, 1.6vw, 1.8rem);
+        bottom: clamp(8px, 1vw, 14px);
+      }
+      .carousel-sec .bee-overlay.bee-top-right {
+        width: clamp(32px, 3.5vw, 50px);
+        top: -12px;
+        right: -12px;
+      }
+      .carousel-sec .bee-overlay.bee-bottom-left {
+        width: clamp(45px, 5vw, 75px);
+        bottom: -12px;
+        left: -12px;
+      }
+
+      /* ══ 4. SCHEDULE SECTION (Full-width tree branch, centered text) ══ */
+      .schedule-sec {
+        width: 100%;
+        overflow: hidden;
+      }
+      .schedule-sec .sticky-header {
+        width: 100%;
+        text-align: center;
+      }
+      .schedule-sec .sticky-header .section-subtitle,
+      .schedule-sec .sticky-header .section-title {
+        text-align: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: block;
+        width: 100%;
+      }
+      .schedule-image-wrapper {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+      }
+
+      /* ══ 5. REGISTRY SECTION (Edge-to-edge background, centered content) ══ */
+      .registry-sec {
+        width: 100%;
+      }
+      .registry-sec .section-subtitle,
+      .registry-sec .section-title,
+      .registry-sec .registry-img,
+      .registry-sec p,
+      .registry-sec .sign-board {
+        max-width: min(var(--content-max-w, 1200px), 800px);
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .registry-sec p {
+        max-width: 650px;
+      }
+
+      /* ══ 6. RSVP SECTION (Full width honey background, centered form card, outer honeycomb) ══ */
+      .rsvp-sec {
+        width: 100%;
+      }
+      .rsvp-sec .section-subtitle,
+      .rsvp-sec .section-title {
+        max-width: var(--content-max-w, 1200px);
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .rsvp-sec .form-card {
+        max-width: min(var(--content-max-w, 1200px), 750px);
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .form-hc {
+        width: clamp(140px, 16vw, 260px);
+      }
+
+      /* ══ 7. FOOTER (Full width) ══ */
+      .footer {
+        width: 100%;
+      }
+      .footer > * {
+        max-width: var(--content-max-w, 1200px);
+        margin-left: auto;
+        margin-right: auto;
+      }
     }
     .textShadowLight{
       text-shadow: #FFF 0px 0px 5px, #FFF 0px 0px 10px, #FFF 0px 0px 15px;
@@ -127,17 +351,17 @@
       text-shadow: 2px 2px 4px #5f3a1580, 0px 0px 10px #ae661eb8;  
     }
     
-    .hero-sec .script-font { font-size: 3.5rem; color: var(--accent); line-height: 1.1; margin: 20px 0; transform: rotate(-5deg); text-shadow: 1px 1px 4px #fdfaf6cc; }
-    .hero-sec h2 { font-size: 1.5rem; color: var(--text); }
-    .hero-sec .date { font-size: 1.2rem; font-weight: 700; color: var(--text-light); margin-top: 10px; }
+
+    .hero-sec h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--text); }
+    .hero-sec .date { font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 700; color: var(--text-light); margin-top: clamp(10px, 2vw, 20px); }
     .heroTop{
       margin-bottom: auto;
     }
     /* COUNTDOWN */
-    .cd-grid { display: flex; justify-content: center; gap: 8px; margin-top: 8px; width: 100%; }
-    .cd-box { flex: 1; padding: 5px 5px; border-radius: 12px; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid var(--primary); }
-    .cd-num { font-family: 'Fredoka One', cursive; font-size: 16px; display: block; color: var(--accent); }
-    .cd-lbl { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; color: var(--text-light); text-transform: uppercase; }
+    .cd-grid { display: flex; justify-content: center; gap: clamp(8px, 1.5vw, 20px); margin-top: clamp(8px, 2vw, 24px); width: 100%; }
+    .cd-box { flex: 1; padding: clamp(5px, 1.5vw, 15px) clamp(5px, 1.5vw, 15px); border-radius: 12px; background: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid var(--primary); }
+    .cd-num { font-family: 'Fredoka One', cursive; font-size: clamp(16px, 4vw, 36px); display: block; color: var(--accent);text-align:center; }
+    .cd-lbl { font-size: clamp(0.55rem, 1.5vw, 1.2rem); font-weight: 700; letter-spacing: 0.1em; color: var(--text-light); text-transform: uppercase; }
 
     /* Scroll Down Indicator */
     .scroll-down-indicator {
@@ -167,7 +391,7 @@
 ========================================= */
 .polaroid { 
   background: #fff; 
-  padding: 15px 15px 40px; 
+  padding: clamp(15px, 3vw, 40px) clamp(15px, 3vw, 40px) clamp(40px, 10vw, 100px); 
   border-radius: 8px; 
   box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
   position: relative; /* Crucial for absolute positioning of the bees */
@@ -176,7 +400,7 @@
 
 .polaroid img.main-photo { 
   width: 100%; 
-  height: 300px; 
+  height: clamp(300px, 45vw, 600px); 
   object-fit: cover; 
   border-radius: 4px; 
   background: #eee; 
@@ -185,11 +409,11 @@
 .polaroid .caption { 
   font-family: 'Pacifico', cursive; 
   position: absolute; 
-  bottom: 10px; 
+  bottom: clamp(10px, 2vw, 20px); 
   left: 0; 
   width: 100%; 
   text-align: center; 
-  font-size: 1.2rem; 
+  font-size: clamp(1.2rem, 3.5vw, 2.8rem); 
   color: #333; 
 }
 
@@ -198,7 +422,7 @@
 ========================================= */
 .bee-overlay {
   position: absolute;
-  width: 80px;
+  width: clamp(80px, 15vw, 180px);
   height: auto;
   z-index: 10;
   pointer-events: none; /* Prevents bees from interfering with clicks/swipes */
@@ -206,15 +430,15 @@
 
 /* Bottom Left Bee (With Honey) */
 .bee-bottom-left {
-  bottom: -15px;
-  left: -25px;
+  bottom: clamp(-15px, -3vw, -40px);
+  left: clamp(-25px, -5vw, -60px);
 }
 
 /* Top Right Bee (Only Bee) */
 .bee-top-right {
-  width: 42px;
-  top: -25px;
-  right: -20px;
+  width: clamp(42px, 8vw, 100px);
+  top: clamp(-25px, -5vw, -60px);
+  right: clamp(-20px, -4vw, -50px);
 }
     /* ══ 4. PARTY SCHEDULE (Sticky Header & Cards) ══ */
     /* =========================================
@@ -302,12 +526,15 @@
 
     /* ══ 5. GIFT REGISTRY & EXTRAS ══ */
     .registry-sec { text-align: center; background: rgba(253, 250, 246, 0.9); }
-    .registry-img { width: 100%; max-width: 250px; border-radius: 12px; margin-bottom: 20px; mix-blend-mode: multiply; }
+    .registry-img { width: 100%; max-width: clamp(250px, 40vw, 500px); border-radius: 12px; margin-bottom: clamp(20px, 4vw, 40px); mix-blend-mode: multiply; }
     .sign-board {
       display: inline-block; background: #8c6239; color: #fff;
-      padding: 15px 30px; border-radius: 10px; font-family: 'Fredoka One', cursive;
-      text-decoration: none; font-size: 1.2rem; transform: rotate(-2deg);
+      padding: clamp(15px, 3vw, 30px) clamp(30px, 5vw, 60px); border-radius: 10px; font-family: 'Fredoka One', cursive;
+      text-decoration: none; font-size: clamp(1.2rem, 3vw, 2.2rem); transform: rotate(-2deg);
       box-shadow: 0 6px 0 #5c4331; transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .registry-sec p {
+      font-size: clamp(1rem, 2.2vw, 1.6rem);
     }
     .sign-board:active { transform: rotate(-2deg) translateY(4px); box-shadow: 0 2px 0 #5c4331; }
 
@@ -342,37 +569,37 @@
     }
     .form-card { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: left; }
     
-    .form-label { display: block; font-weight: 700; color: var(--text); margin-bottom: 8px; font-size: 14px; }
+    .form-label { display: block; font-weight: 700; color: var(--text); margin-bottom: clamp(8px, 2vw, 16px); font-size: clamp(14px, 2vw, 24px); }
     .input-field { 
-      width: 100%; padding: 8px; border: 2px solid var(--border); border-radius: 12px;
-      background: var(--bg); font-family: 'Quicksand', sans-serif; font-size: 14px; color: var(--text); outline: none; margin-bottom: 12px; transition: border-color 0.3s; 
+      width: 100%; padding: clamp(8px, 2vw, 20px); border: 2px solid var(--border); border-radius: 12px;
+      background: var(--bg); font-family: 'Quicksand', sans-serif; font-size: clamp(14px, 2vw, 22px); color: var(--text); outline: none; margin-bottom: clamp(12px, 3vw, 24px); transition: border-color 0.3s; 
     }
     .input-field:focus { border-color: var(--accent); background: #fff; }
-    textarea.input-field { resize: none; min-height: 100px; }
+    textarea.input-field { resize: none; min-height: clamp(100px, 15vw, 200px); }
     
     /* Custom Radios for Attendance */
-    .radio-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .radio-group { display: flex; flex-direction: column; gap: clamp(10px, 2vw, 20px); margin-bottom: clamp(20px, 4vw, 40px); }
     .radio-btn { cursor: pointer; display: flex; align-items: center; }
     .radio-btn input { display: none; }
     .radio-text { 
-      display: block; width: 100%; padding: 8px; border-radius: 12px; border: 2px solid var(--border);
-      font-weight: 600; text-align: center; transition: all 0.2s; background: var(--bg);
+      display: block; width: 100%; padding: clamp(8px, 2vw, 20px); border-radius: 12px; border: 2px solid var(--border);
+      font-size: clamp(14px, 2vw, 22px); font-weight: 600; text-align: center; transition: all 0.2s; background: var(--bg);
     }
     .radio-btn input:checked + .radio-text { background: var(--accent); color: #fff; border-color: var(--accent); }
 
     /* Guest Toggle Group (Side by side) */
-    .toggle-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .toggle-group { display: flex; gap: clamp(10px, 2vw, 20px); margin-bottom: clamp(20px, 4vw, 40px); }
     .toggle-btn { flex: 1; cursor: pointer; }
     .toggle-btn input { display: none; }
     .toggle-btn .toggle-text {
-      display: block; width: 100%; padding: 8px; border-radius: 12px; border: 2px solid var(--border);
-      font-weight: 600; text-align: center; transition: all 0.2s; background: var(--bg);
+      display: block; width: 100%; padding: clamp(8px, 2vw, 20px); border-radius: 12px; border: 2px solid var(--border);
+      font-size: clamp(14px, 2vw, 22px); font-weight: 600; text-align: center; transition: all 0.2s; background: var(--bg);
     }
     .toggle-btn input:checked + .toggle-text { background: var(--primary); color: var(--text); border-color: var(--primary); }
 
     .submit-btn { 
-      width: 100%; padding: 18px; background: var(--accent); color: #fff; border: none; border-radius: 30px; 
-      font-family: 'Fredoka One', cursive; font-size: 1.2rem; cursor: pointer; transition: transform 0.2s; 
+      width: 100%; padding: clamp(18px, 3vw, 28px); background: var(--accent); color: #fff; border: none; border-radius: 30px; 
+      font-family: 'Fredoka One', cursive; font-size: clamp(1.2rem, 2.5vw, 2.2rem); cursor: pointer; transition: transform 0.2s; 
       box-shadow: 0 6px 15px rgba(255, 140, 66, 0.4); 
     }
     .submit-btn:active { transform: scale(0.96); }
@@ -507,6 +734,10 @@
 }
 
     @media (max-width: 480px) { .audio-ctrl { right: 25px; } }
+    @media (min-width: 768px) {
+      .audio-ctrl { right: 40px !important; bottom: 40px !important; width: 72px; height: 72px; }
+      .audio-ctrl svg { width: 36px; height: 36px; }
+    }
 
     /* ══ GIFT REGISTRY MODAL ══ */
     .modal-backdrop {
@@ -525,8 +756,8 @@
     .modal-card {
       background: var(--bg);
       border-radius: 24px;
-      padding: 30px 20px 25px;
-      width: 100%; max-width: 420px;
+      padding: clamp(30px, 5vw, 60px) clamp(20px, 4vw, 40px) clamp(25px, 4vw, 50px);
+      width: 100%; max-width: clamp(420px, 80vw, 800px);
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
       border: 3px solid var(--primary);
       position: relative;
@@ -548,8 +779,8 @@
     }
     .modal-close:hover { background: var(--accent); color: #fff; }
     
-    .modal-title { font-family: 'Fredoka One', cursive; font-size: 1.8rem; color: var(--text); text-align: center; margin-bottom: 5px; }
-    .modal-subtitle { font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; text-align: center; margin-bottom: 8px; }
+    .modal-title { font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 4vw, 3rem); color: var(--text); text-align: center; margin-bottom: 5px; }
+    .modal-subtitle { font-size: clamp(0.8rem, 2vw, 1.4rem); font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; text-align: center; margin-bottom: 8px; }
     
     .registry-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
     
@@ -566,13 +797,13 @@
       background: var(--bg-accent);
       box-shadow: 0 4px 12px rgba(255, 140, 66, 0.25);
     }
-    .opt-icon { font-size: 34px; flex-shrink: 0; }
-    .opt-info h4 { font-family: 'Fredoka One', cursive; font-size: 15px; color: var(--text); margin-bottom: 3px; }
-    .opt-info p { font-size: 10px; color: var(--text-light); line-height: 1.1; }
+    .opt-icon { font-size: clamp(34px, 5vw, 60px); flex-shrink: 0; }
+    .opt-info h4 { font-family: 'Fredoka One', cursive; font-size: clamp(15px, 2.5vw, 24px); color: var(--text); margin-bottom: 3px; }
+    .opt-info p { font-size: clamp(10px, 1.8vw, 16px); color: var(--text-light); line-height: 1.1; }
 
     .modal-btn {
-      width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none;
-      border-radius: 30px; font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      width: 100%; padding: clamp(16px, 3vw, 28px); background: var(--accent); color: #fff; border: none;
+      border-radius: 30px; font-family: 'Fredoka One', cursive; font-size: clamp(1.1rem, 2.5vw, 2.2rem);
       cursor: pointer; box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3); text-align: center;
       transition: transform 0.2s;
     }
@@ -637,7 +868,7 @@
     #landscape-warning h2 { font-size: 1.8rem; margin-bottom: 10px; font-family: 'Fredoka One', cursive; }
     #landscape-warning p { font-size: 1.1rem; font-weight: 600; color: var(--text-light); }
     @keyframes rotatePhone { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
-    @media screen and (orientation: landscape) and (max-height: 600px) {
+    @media screen and (orientation: landscape) and (max-height: 600px) and (max-width: 767px) {
       #landscape-warning { display: flex; }
       #app, #curtain-layer, .audio-ctrl, #page-loader { display: none !important; }
     }
@@ -712,8 +943,7 @@
     <!-- 1. OPENING SEQUENCE -->
     <div id="curtain-layer">
       <video id="curtain-video" playsinline webkit-playsinline x5-playsinline disablePictureInPicture fetchpriority="high" preload="auto" poster="images/BearThumb.webp">
-        <source src="https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
-        <source src="https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4" type="video/mp4">
+        <!-- Sources set dynamically via JS -->
       </video>
       <div class="tap-overlay">
         <span class="tap-text" id="tap-text">Tap to Open</span>
@@ -742,12 +972,13 @@
         <div class="cd-box"><span class="cd-num" id="cd-s">0</span><span class="cd-lbl">Secs</span></div>
       </div>
 
+      </div>
+
       <div class="scroll-down-indicator" id="scroll-indicator">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="7 13 12 18 17 13"></polyline>
           <polyline points="7 6 12 11 17 6"></polyline>
         </svg>
-      </div>
       </div>
       <div class="bee-container">
         <img src="images/GiftHoney_2.webp" alt="Cartoon Bee" class="bee bee-glide" loading="eager" fetchpriority="high">
@@ -825,7 +1056,7 @@
     <section class="schedule-sec">
   <div class="sticky-header">
     <p class="section-subtitle">THE FUN AWAITS</p>
-    <h2 class="section-title" style="margin:0;">Party Schedule</h2>
+    <h2 class="section-title" style="margin:0 auto; text-align:center;">Party Schedule</h2>
   </div>
   
   <div class="schedule-image-wrapper">
@@ -1088,14 +1319,24 @@
       const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
       const isIOS    = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-      const HONEY_VIDEO_URL = "https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4";
+      const isMobileViewFn = () => {
+        if (window.matchMedia('(orientation: landscape)').matches && window.innerWidth >= 480) return false;
+        return window.innerWidth < 768;
+      };
+
+      const HONEY_VIDEO_URL_MOBILE = "https://res.cloudinary.com/dticzwbrv/video/upload/v1786016835/Honeyintroinvelop_azqwrt.mp4";
+      const HONEY_VIDEO_URL_DESKTOP = "https://res.cloudinary.com/dticzwbrv/video/upload/v1788851494/Bearvideo_Desktop_aknccn.mp4";
+      let currentVideoUrl = isMobileViewFn() ? HONEY_VIDEO_URL_MOBILE : HONEY_VIDEO_URL_DESKTOP;
       let videoBlobReady = false;
+
+      video.poster = isMobileViewFn() ? "images/BearThumb.webp" : "images/BearVideo_DesktopThumb.webp";
+      video.src = currentVideoUrl;
 
       // Warm up the WebKit / Safari media pipeline immediately
       video.load();
 
       // Background fetch into a local Blob for instant 0ms latency on user tap
-      fetch(HONEY_VIDEO_URL, { mode: 'cors' })
+      fetch(currentVideoUrl, { mode: 'cors' })
         .then(res => {
           if (!res.ok) throw new Error('Fetch failed');
           return res.blob();
@@ -1112,6 +1353,39 @@
         .catch(err => {
           console.log('Video blob pre-fetch failed, fallback to direct stream:', err);
         });
+
+      let rsz;
+      window.addEventListener('resize', () => {
+        clearTimeout(rsz);
+        rsz = setTimeout(() => {
+          if (isOpened) return;
+          const target = isMobileViewFn() ? HONEY_VIDEO_URL_MOBILE : HONEY_VIDEO_URL_DESKTOP;
+          if (currentVideoUrl !== target) {
+            currentVideoUrl = target;
+            video.poster = isMobileViewFn() ? "images/BearThumb.webp" : "images/BearVideo_DesktopThumb.webp";
+            video.src = target;
+            videoBlobReady = false;
+            video.load();
+          }
+        }, 120);
+      });
+
+      window.addEventListener('orientationchange', () => {
+        const sync = () => {
+          if (isOpened) return;
+          const target = isMobileViewFn() ? HONEY_VIDEO_URL_MOBILE : HONEY_VIDEO_URL_DESKTOP;
+          if (currentVideoUrl !== target) {
+            currentVideoUrl = target;
+            video.poster = isMobileViewFn() ? "images/BearThumb.webp" : "images/BearVideo_DesktopThumb.webp";
+            video.src = target;
+            videoBlobReady = false;
+            video.load();
+          }
+        };
+        sync();
+        setTimeout(sync, 150);
+        setTimeout(sync, 350);
+      });
 
     } else {
       // No video element — hide loader on window load
@@ -1273,7 +1547,12 @@
 
     // 5. EMBLA CAROUSEL INIT
     const emblaNode = document.querySelector('.embla');
-    const options = { loop: true };
+    const options = {
+      loop: true,
+      breakpoints: {
+        '(min-width: 768px)': { active: false }
+      }
+    };
     const emblaApi = EmblaCarousel(emblaNode, options, [EmblaCarouselAutoplay()]);
 
     // 6. RSVP FORM LOGIC
